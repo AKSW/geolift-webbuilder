@@ -84,7 +84,7 @@
                             <input type="text" id="email" class="col-sm-6 form-control" placeholder="user@provider.de">
                         </div>
                         <div class="col-sm-3 col-xs-12">
-                            <button class="btn ">submit</button>
+                            <button class="btn " id="loginbtn">submit</button>
                         </div>
 
 
@@ -237,6 +237,7 @@
         <script src="js/bootstrap.min.js"></script>
         <script src="js/filehistory.js"></script>   
         <script src="js/upload.js"></script>    
+        <script src="js/main.js"></script>    
         <script>
             new Upload();
         </script>

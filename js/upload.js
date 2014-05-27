@@ -35,7 +35,6 @@ var Upload = function(){
     function fileOnLoad(xhr){
         console.log(xhr.responseText);
         var array1=JSON.parse(xhr.responseText);
-        //[{"filename":"_Act_Ex1_In1_Ex2_Delta_20-51_1-1.originale_Act_Ex1_In1_Ex2_Delta_34-45_1-1.originale_ddp.ps","url":"view%2F%3Fd%3D6f73ae34b04e6e135b44a6785d08a1b1","available":1394815095},{"filename":"_Act_Ex1_In1_Ex2_Mut_103-107_1-4.originale_dp.ps","url":"view%2F%3Fd%3D2a450441cce10222e4f4e53d14966f4d","available":1394815095}] 
         for (var a in array1){
             $fileHistory.addFile(array1[a].filename,array1[a].url,array1[a].available);
         }
@@ -83,7 +82,6 @@ var Upload = function(){
          
     }
     function initFileDropper(){
-        console.log("init()");
         $($filedropWrapper).on('dragenter', function(e){
             e.preventDefault();
             e.stopPropagation();
@@ -98,7 +96,6 @@ var Upload = function(){
         });
     };
     function initFileSelect(){
-        console.log("initFile();");
         $("input:file").change(function (e){
             fileSelector(e);
             e.preventDefault();
