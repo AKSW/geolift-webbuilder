@@ -1,0 +1,43 @@
+/* 
+    Document   : query
+    Created on : 17.06.2014, 18:58:28
+    Author     : Alrik Hausdorf <alrik@gurkware.de>
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+.sidebar{
+    width: 250px;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+}
+.vdragbar{
+   background-color: #c0c0c0;
+   width: 100%;
+   position: absolute;
+   top: 50%;
+   height: 8px;
+   margin-top: -4px;
+   cursor: row-resize;
+}
+.sidebar>.sidebar-element{
+    position: absolute;
+    margin: 0px;
+    height: 50%;
+    width: 100%;
+    background-color: #c4e3f3;
+    overflow: auto;
+}
+.viewpoint{
+    left: 250px;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: #bce;
+}

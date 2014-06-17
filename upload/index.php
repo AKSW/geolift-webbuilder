@@ -1,8 +1,8 @@
 <?php
 
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL );//| E_STRICT);
 $base_dir = "files".DIRECTORY_SEPARATOR;
-
+include_once './inc/functions.php';
 
 if (isset($_FILES["files"])) {//upload new File
     include 'inc/upload.php';
@@ -11,6 +11,6 @@ if (isset($_FILES["files"])) {//upload new File
 } elseif (isset($_REQUEST["function"])) {//all other functions
     include 'inc/misc.php';
 } else {
-    die("{'error':'Don\'t understand what you want.\n\r Best, \n\rYour Server'}");
+    die("{'error':'Don\'t understand what you want. \n\rBest, \n\rYour Server'}");
 }
 ?>

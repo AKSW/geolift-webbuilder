@@ -1,7 +1,7 @@
 <?php
 /*
-* Copyright (c) 2012-2014, Gurkware Solutions GbR  All rights reserved. 
-*/
+ * Copyright (c) 2012-2014, Gurkware Solutions GbR  All rights reserved. 
+ */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +27,7 @@
 
     </head> 
     <body>
+        <!--
         <div class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
@@ -40,24 +41,18 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li class="active"><a href="#home">Start</a></li>
-                        <li><a href="#MyFiles">My Datasets</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><a  data-toggle="collapse" data-parent="#blocks" href="#datasets">My Datasets</a></li>
                     </ul>
 
-                </div><!--/.nav-collapse -->
+                </div><--/.nav-collapse --
             </div>
-        </div>
+        </div>-->
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
                     <h1 id="home">GeoLift <small>Web-Builder</small></h1>
                     <p>
-                        text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test 
-                        text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test 
-                        text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test 
-                        text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test 
-                        text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test 
-                        text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test text test 
+                      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
                     </p>
                 </div>
             </div>
@@ -68,42 +63,34 @@
 
 
                     <p class="loggedin" style="display:none;">Your logged in with:
-                        <br>
+                        
                         <strong>test@gurkware.de</strong> 
                         <button class="btn btn-xs ">logout</button>
                     </p>
 
                     <div class="form-group notloggedin">
-                        <p>
-                            Please enter your email-adress. <br>
-                            Your email is used to store your files on the Server, and to inform you on completed Querys.<br>
-                            If you have already an Account, look for the email we send you and use the link in it, to identify.<br>
-                        </p>
-
+                        
+                        <div class="col-xs-12" style="margin-bottom: 15px;" >
+                            Please first enter your email-adress. <br>
+                            Your email is used to store your files on the Server, and to inform you on completed Querys.                            
+                        </div>
+                        
                         <div class="col-sm-5 col-xs-12">
                             <input type="text" id="email" class="col-sm-6 form-control" placeholder="user@provider.de">
                         </div>
                         <div class="col-sm-3 col-xs-12">
                             <button class="btn " id="loginbtn">submit</button>
                         </div>
-
-
                     </div>
-
-
                     <div class="col-xs-12">
                         <hr>
                     </div>
-                    <div class="panel-group" id="blocks">
+                    <div class="panel-group hidden" id="blocks">
                         <div class="panel panel-default">
-
                             <div class="panel-heading">
-                                <a data-toggle="collapse" data-parent="#blocks" href="#adddataset">
                                     <h3 class="panel-title clearfix">Add a new Dataset</h3>
-                                </a>
-
                             </div>
-                            <div id="adddataset" class="panel-collapse collapse in">
+                            <div id="adddataset">
                                 <div class="panel-body wrapper" >
                                     <form>
                                         <div class="form-group col-xs-12 col-sm-5">
@@ -157,15 +144,15 @@
 
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <a data-toggle="collapse" data-parent="#blocks" href="#datasets">
-                                    <h3 class="panel-title clearfix"> Your Datasets and Querys</h3>
-                                </a>
+                               
+                                <h3 class="panel-title clearfix"> Your Datasets and Querys<button id="refreshBtn" class=" btn btn-xs pull-right"><i class="fa fa-refresh"></i> Refresh</button></h3>
+                                
 
                             </div>
-                            <div id="datasets" class="panel-collapse collapse">
+                            <div id="datasets" >
 
                                 <div class="panel-body wrapper" >
-                                    <p>You dont have any Datasets or Querys stored</p>
+                                    <p>Please login first</p>
 
 
                                 </div>
@@ -175,56 +162,6 @@
                 </div>
             </div>
         </div>
-        <!--div class="site-wrapper">
-            
-            <div class="site-wrapper-inner">
-                
-                <div class="cover-container">
-                    
-                    <div class="masthead clearfix">
-                        <div class="inner">
-                            <h3 class="masthead-brand">GeoLift</h3>
-                            <ul class="nav masthead-nav">
-                                <li class="active"><a href="./">Home</a></li>
-                                <li><a href="Features/">Features</a></li>
-                                <li><a href="Contact/">Contact / Statistics</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                        
-                    <div class="inner cover">
-                        <div class="lead">
-                            <label class="file-upload-label" id="fileDropper" data-title="Drop ps-file here or click to select file">
-                                <span class="file-upload-file">
-                                    <i class="fa fa-cloud-upload fa-5x"></i>  
-                                </span>
-                                        
-                                <input type="file" name="files[]" multiple id="files[]">
-                            </label>
-                            <div class="progress progress-striped active">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                    0%
-                                </div>
-                            </div>  
-                            <h2>Latest Uploads <a id="cleanHistory" href="#"><i  class="fa fa-trash-o"></i></a></h2>
-                            <div class="file-history list-group">
-                                
-                                <div class="file-container list-group-item">
-                                    No Recent Uploads
-                                </div>
-                            </div> 
-                        </div>
-                    </div>
-                        
-                    <div class="mastfoot">
-                        <p>&copy; Gurkware Solutions GbR, Daniel Gerighausen and Alrik Hausdorf</p>
-                    </div>
-                        
-                </div>
-                    
-            </div>
-                
-        </div-->
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
@@ -236,6 +173,7 @@
         </script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/filehistory.js"></script>   
+        <script src="js/Storage.js"></script>   
         <script src="js/upload.js"></script>    
         <script src="js/main.js"></script>    
         <script>

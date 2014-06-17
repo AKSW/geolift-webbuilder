@@ -8,7 +8,7 @@ if (!Date.now) {
     };
 }
 var Storage = function() {
-    var $localStorageName = "idotter.storage";
+    var $localStorageName = "geolift.storage";
     var $storage = null;
     function getValue(key) {
         if ($storage === null)
@@ -19,9 +19,9 @@ var Storage = function() {
     }
     ;
     function hasValue(key) {
-       
+
         if ($storage === null)
-            getFromStorage(); 
+            getFromStorage();
         if (typeof($storage[key]) === typeof(undefined))
             return false;
         return true;
@@ -32,6 +32,16 @@ var Storage = function() {
         if ($storage === null)
             getFromStorage();
         $storage[key] = value;
+        saveToStorage();
+        return true;
+    }
+    function removeValue(key) {
+        if ($storage === null)
+            getFromStorage();
+         if (typeof($storage[key]) === typeof(undefined))
+            return false;
+        delete $storage[key];
+        
         saveToStorage();
         return true;
     }
@@ -62,10 +72,10 @@ var Storage = function() {
         var storage = window['localStorage'];
         storage.setItem($localStorageName, json);
     }
-    function init(){
-        document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function(s) {
-            $localStorageName ="idotter.storage."+ s.substring(3);
-        });
+    function init() {
+//        document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function(s) {
+//            $localStorageName ="idotter.storage."+ s.substring(3);
+//        });
     }
     init();
     return {
@@ -76,7 +86,11 @@ var Storage = function() {
             return hasValue(key);
         },
         setValue: function(key, value) {
+
             return setValue(key, value);
+        },
+        removeValue: function(key) {
+            return removeValue(key);
         }
     };
 };

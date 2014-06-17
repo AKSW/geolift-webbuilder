@@ -11,12 +11,12 @@ function handleUpload($file, $i = -1) {
     global $user_dir;
     $ret = array();
     $now = new DateTime();
-    
+
     if ($i != -1)
         $fileName = $file["name"][$i];
     else
         $fileName = $file["name"];
-    
+
     if ($i != -1)
         $tmpName = $file["tmp_name"][$i];
     else
@@ -24,23 +24,27 @@ function handleUpload($file, $i = -1) {
 
     $newFilename = md5_file($tmpName);
 
+   
     if (!is_dir($user_dir . $newFilename) && !is_file($user_dir . $newFilename)) {
-
-        move_uploaded_file($tmpName, $user_dir . $newFilename);
+        mkdir($user_dir . $newFilename);
+        
+        move_uploaded_file($tmpName, $user_dir . $newFilename.DIRECTORY_SEPARATOR."input.in");
     }
-    $ret["filename"] = $fileName;
+    $ret["input"] = $newFilename;
+    $ret["filename"] = $fileName;    
     $ret["upload"] = $now->getTimestamp();
 
     file_put_contents($user_dir . $newFilename . ".json", json_encode($ret));
     return $ret;
 }
+
 //<start> BASE Script </start>
 if (!isset($_REQUEST["user"]))
-    die("{'error':'No User defined'}");
+    die('{"error":"No User defined"}');
 
-$user_dir = $base_dir . $_REQUEST['user'] . DIRECTORY_SEPARATOR;
+$user_dir = $base_dir . md5($_REQUEST['user']) . DIRECTORY_SEPARATOR;
 if (!is_dir($user_dir))
-    die("{'error':'User not existings'}");
+    die('{"error":"User not existings"}');
 
 
 
