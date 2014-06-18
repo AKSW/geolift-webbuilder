@@ -28,23 +28,58 @@
 
         <div class="sidebar">
             <div class="sidebar-element container" style="top:0px; ">
-                <div class="input-group">
-                    <input id="jobName" type="text" placeholder="newQuery" data-toggle="tooltip1" data-placement="bottom" class="form-control" title="Query name">
+                <div class="input-group" style="padding-top: 5px;">
+                    <input id="jobName" type="text" placeholder="newQuery" data-container="body" data-toggle="tooltip1" data-placement="bottom" class="form-control" title="Query name">
                     <span class="input-group-btn">
-                        <button class="btn btn-success " data-toggle="tooltip1" data-placement="bottom" title="Save"><i class="fa fa-save"></i></button>
-                        <button class="btn btn-danger " data-toggle="tooltip1" data-placement="bottom" title="discard & close"><i class="fa fa-reply"></i></button>
+                        <button class="btn btn-success " data-toggle="tooltip1" data-container="body" data-placement="bottom" title="Save"><i class="fa fa-save"></i></button>
+                        <button class="btn btn-danger " data-toggle="tooltip1" data-container="body" data-placement="bottom" title="discard & close"><i class="fa fa-reply"></i></button>
                     </span>
                 </div>
+                <hr>
+
             </div>
 
-            <div class="sidebar-element" style="top:50%;">
-
+            <div class="sidebar-element" style="top:50%; padding: 5px;">
+                <h5>Module: test1</h5>
+                <div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="long Description of this setting" >
+                    <label for="setting1">foxInput</label>
+                    <input type="text" class="form-control" id="setting1" >
+                </div>
+                <div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="long Description of this setting" >
+                    <label for="setting2">foxOutput</label>
+                    <select class="form-control" id="setting2">
+                        <option>TURTLE</option>             
+                        <option>JSONLD</option>             
+                        <option>N3</option>             
+                        <option>N-TRIPLE</option>             
+                        <option>RDF/JSON</option>             
+                        <option>RDF/XML</option>             
+                        <option>RDF/XML-ABBREV</option>
+                    </select>
+                </div>
+                <div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="long Description of this setting">
+                    <label for="setting3">foxUseNif</label>
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="setting3">
+                        <label class="onoffswitch-label" for="setting3">
+                            <span class="onoffswitch-inner"></span>
+                            <span class="onoffswitch-switch"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
             <div class="vdragbar" style="text-align: center;">
                 <hr class="pull-left" style=" margin: 3px; height: 4px; width: 100%;">
             </div>
         </div>
-        <div class="viewpoint"></div>
+        <div class="viewpoint">
+            <div style="left: 30px; width: 100px;" class="queryblock startendBlock"><div class="text">START</div></div>
+            <div style="left: 130px; width: 100px;" class="queryblock arrow"><i class="fa fa-5x fa-arrow-right"></i></div>
+            <div style="left: 230px; width: 100px;" class="queryblock startendBlock"><div class="text">END</div></div>
+            
+            
+            
+        </div>
 
         <!-- Bootstrap core JavaScript
         ================================================== -->

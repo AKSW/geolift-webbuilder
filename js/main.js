@@ -52,10 +52,16 @@ function loadUserFiles() {
                     } else if (data[index].jobs[i].state === "done") {
                         state = '<i class="fa fa-check fa-fw" data-toggle="tooltip" data-placement="right" title="Query is done"></i>';
                     }
+                    var buttons = '';
+                    if (data[index].jobs[i].state === "waiting") {
+                        buttons = '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].name + '" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a>'
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].name + '&run=1" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-play"></i></a>'
+                    }
                     $('#datasets .wrapper').find('#file_' + data[index].input + ' .panel-body').append('<div class="row">\n\
 <div class="col-xs-10">' + state + '<strong>Job #' + i + ': </strong>' + data[index].jobs[i].name + '</div><div class="col-xs-2">' + '\
-<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a></div>\n\
+' + buttons + '</div>\n\
 </div>');
+
                 }
             }
             console.log(data[index]);
