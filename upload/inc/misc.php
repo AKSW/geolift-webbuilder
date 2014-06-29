@@ -21,7 +21,7 @@ if ($_REQUEST['function'] == "getDatasets") {
             foreach (glob($user_dir . $result1->input . DIRECTORY_SEPARATOR . '*.job') as $file1) {
                 $result1->jobs[] = json_decode(file_get_contents($file1));
             }
-            
+
             $results_array[] = $result1;
         }
     }
@@ -36,6 +36,7 @@ if ($_REQUEST['function'] == "getDatasets") {
 
     if (is_dir($user_dir)) {
         if (is_file($user_dir . DIRECTORY_SEPARATOR . "user.json")) {
+            setJsonResponse();
             $json = file_get_contents($user_dir . "user.json");
             echo($json);
             die('');
@@ -46,5 +47,10 @@ if ($_REQUEST['function'] == "getDatasets") {
         file_put_contents($user_dir . "user.json", json_encode($json));
         echo(json_encode($json));
     }
+} elseif ($_REQUEST['function'] == "getModules") {
+    setJsonResponse();
+    $json = file_get_contents("../geolift" . DIRECTORY_SEPARATOR . "modules.json");
+    echo($json);
+    die('');
 }
 ?>

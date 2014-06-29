@@ -12,4 +12,7 @@ function endsWith($haystack, $needle)
 {
     return $needle === "" || substr(trim($haystack), -strlen($needle)) === $needle;
 }
+function setJsonResponse() {
+    header("Content-type: application/json");
+}
 ?>

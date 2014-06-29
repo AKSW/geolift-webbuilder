@@ -39,40 +39,84 @@ root {
     top: 0px;
     bottom: 0px;
     right: 0px;
-    background-color: #bce;
     margin: 15px;
 }
+.queryblock:not(.arrow){
+     -moz-box-shadow:    0px 0px 3px 3px #ccc;
+    -webkit-box-shadow: 0px 0px 3px 3px #ccc;
+    box-shadow:         0px 0px 3px 3px #ccc;
+}
 .queryblock{
+    
     position: absolute;
-    top: 40%;
-    height: 20%;
+    height: 100%;
     background: #FFFFFF;
     -webkit-border-radius: 5px;
--moz-border-radius: 5px;
-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+   
 }
 .queryblock.arrow{
     background: none;
     text-align: center;
 }
+.queryblock.arrow.ui-state-active .fa-arrow-right{
+    display: none;
+    
+}
+.queryblock.arrow.ui-state-active .fa-plus-circle{
+    display: block;
+    
+}
+.queryblock.arrow .fa-plus-circle{
+    display: none;
+    
+}
 .startendBlock{
-    top: 15px;
-    bottom: 15px;
-    height: auto !important;
+    font-size: xx-large;
     margin-top: auto;
 }
-.startendBlock>.text{
-  writing-mode:tb-rl;
-    -webkit-transform:rotate(90deg);
-    -moz-transform:rotate(90deg);
-    -o-transform: rotate(90deg);
-    white-space:nowrap;
-    display:block;
-    bottom:10px;
-    width:20px;
-    height:20px; 
-font-size: xx-large;
+.queryblock>.text>.center-container{
+    display: table-cell; 
+    vertical-align: middle;
 }
+.queryblock>.text{
+    display: table; 
+    height: 100%; 
+    text-align: center; 
+    width: 100%; 
+    overflow: hidden;
+}
+
+/* start Module-Sidebar-style */
+#moduleList .module{
+     padding: 5px;
+    text-align: center;
+    background: #fff;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+body .module{
+    background: #c0c0c0;
+      padding: 5px;
+    text-align: center;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+/* Start On/off-switch style*/
 .onoffswitch {
     position: relative; width: 86px;
     -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;

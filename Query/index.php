@@ -36,6 +36,7 @@
                     </span>
                 </div>
                 <hr>
+                <div class="input-group" id="moduleList" style="padding-top: 0px;"></div>
 
             </div>
 
@@ -73,12 +74,36 @@
             </div>
         </div>
         <div class="viewpoint">
-            <div style="left: 30px; width: 100px;" class="queryblock startendBlock"><div class="text">START</div></div>
-            <div style="left: 130px; width: 100px;" class="queryblock arrow"><i class="fa fa-5x fa-arrow-right"></i></div>
-            <div style="left: 230px; width: 100px;" class="queryblock startendBlock"><div class="text">END</div></div>
-            
-            
-            
+            <div style="left: 30px; width: 100px;" class="queryblock startendBlock">
+                <div class="text">
+                    <div class="center-container">
+                        <div class="content-container">
+                            S<br>T<br>A<br>R<br>T
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="left: 130px; width: 100px;" class="queryblock arrow">
+                <div class="text">
+                    <div class="center-container">
+                        <div class="content-container">
+                            <i class="fa fa-5x fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="left: 230px; width: 100px;" class="queryblock startendBlock">
+                <div class="text">
+                    <div class="center-container">
+                        <div class="content-container">
+                            E<br>N<br>D
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
 
         <!-- Bootstrap core JavaScript
