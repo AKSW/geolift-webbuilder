@@ -1,0 +1,114 @@
+{
+   "modules":[
+      {
+         "$schema":"http://json-schema.org/draft-04/schema#",
+         "title":"dereferencing",
+         "description":"The purpose of the dereferencing module is to extend the model’s Geo-spatialinformation by set of information through speciﬁed predicates",
+         "type":"object",
+         "properties":{
+            "input":{
+               "description":"List of interesting predicates to enrich the model, and their Objects’ values. The predicates are given in form of map structure where the key is a user-definedname for the predicate and the map value is the predicate itself. e.g. predicate1 http://www.w3.org/2003/01/geo/wgs84_pos#lat",
+               "type":"string"
+            }
+         },
+         "required":[
+            "input"
+         ]
+      },
+      {
+         "$schema":"http://json-schema.org/draft-04/schema#",
+         "title":"linking",
+         "description":"The purpose of the linking module is to enrich a model with additional geographic information URIs resented in owl:sameAs predicates",
+         "type":"object",
+         "properties":{
+            "specFilePath":{
+               "description":"The path to specification file used for linking process",
+               "type":"string"
+            },
+            "linksFilePath":{
+               "description":"The path to links file resulted from the linking process",
+               "type":"string"
+            },
+            "linksPart":{
+               "description":"Represents the position of the URI to be enriched in the links file",
+               "type":"string"
+            }
+         },
+         "required":[
+            "specFilePath",
+            "linksFilePath",
+            "linksPart"
+         ]
+      },
+      {
+         "$schema":"http://json-schema.org/draft-04/schema#",
+         "title":"nlp",
+         "description":"",
+         "type":"object",
+         "properties":{
+            "litralProperty":{
+               "description":"litral property used for NER",
+               "type":"string"
+            },
+            "useFoxLight":{
+               "description":"use fox light or not",
+               "type":"boolean"
+            },
+            "askEndPoint":{
+               "description":"ask for end point or not",
+               "type":"boolean"
+            },
+            "foxType":{
+               "description":"the fox type (text or URL)",
+               "type":"string"
+            },
+            "foxTask":{
+               "description":"the fox task",
+               "enum":[
+                  "NER"
+               ]
+            },
+            "foxInput":{
+               "description":"the fox input (text or URL)",
+               "type":"string"
+            },
+            "foxOutput":{
+               "description":"the fox output format",
+               "enum":[
+                  "TURTLE",
+                  "JSONLD",
+                  "N3",
+                  "N-TRIPLE",
+                  "RDF/JSON",
+                  "RDF/XML",
+                  "RDF/XML-ABBREV"
+               ]
+            },
+            "foxUseNif":{
+               "description":"use nif or not",
+               "type":"boolean"
+            },
+            "foxReturnHtml":{
+               "description":"return fox as HTML",
+               "type":"boolean"
+            },
+            "addedGeoProperty":{
+               "description":"the added geo property",
+               "type":"string"
+            }
+         }
+      }
+   ],
+   "operators":[
+      {
+         "$schema":"http://json-schema.org/draft-04/schema#",
+         "title":"merge",
+         "description":"The purpose of the merge operator is to merge two models to one single model"
+      },
+      {
+         "$schema":"http://json-schema.org/draft-04/schema#",
+         "title":"split",
+         "description":"The purpose of the split operator is to split one model into two separate models"
+      }
+   ]
+}

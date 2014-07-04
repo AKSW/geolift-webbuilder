@@ -39,7 +39,17 @@ root {
     top: 0px;
     bottom: 0px;
     right: 0px;
-    margin: 15px;
+    /*padding:15px;*/
+    margin: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.queryblock .options{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 30px;
+    font-size: initial;
 }
 .queryblock:not(.arrow){
      -moz-box-shadow:    0px 0px 3px 3px #ccc;
@@ -47,7 +57,8 @@ root {
     box-shadow:         0px 0px 3px 3px #ccc;
 }
 .queryblock{
-    
+    margin-top: 1%;
+    margin-bottom: 1%;
     position: absolute;
     height: 100%;
     background: #FFFFFF;
@@ -60,11 +71,11 @@ root {
     background: none;
     text-align: center;
 }
-.queryblock.arrow.ui-state-active .fa-arrow-right{
+.queryblock.arrow.ui-state-active-my .fa-arrow-right{
     display: none;
     
 }
-.queryblock.arrow.ui-state-active .fa-plus-circle{
+.queryblock.arrow.ui-state-active-my .fa-plus-circle{
     display: block;
     
 }
@@ -74,7 +85,9 @@ root {
 }
 .startendBlock{
     font-size: xx-large;
-    margin-top: auto;
+}
+.startendBlock>.options{
+    display: none;
 }
 .queryblock>.text>.center-container{
     display: table-cell; 
@@ -103,6 +116,33 @@ root {
     border-radius: 3px;
 }
 body .module{
+    background: #c0c0c0;
+      padding: 5px;
+    text-align: center;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+/* start Module-Sidebar-style */
+#moduleList .operator{
+     padding: 5px;
+    text-align: center;
+    background: #fff;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+body .operator{
     background: #c0c0c0;
       padding: 5px;
     text-align: center;

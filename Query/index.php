@@ -40,34 +40,10 @@
 
             </div>
 
-            <div class="sidebar-element" style="top:50%; padding: 5px;">
-                <h5>Module: test1</h5>
-                <div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="long Description of this setting" >
-                    <label for="setting1">foxInput</label>
-                    <input type="text" class="form-control" id="setting1" >
-                </div>
-                <div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="long Description of this setting" >
-                    <label for="setting2">foxOutput</label>
-                    <select class="form-control" id="setting2">
-                        <option>TURTLE</option>             
-                        <option>JSONLD</option>             
-                        <option>N3</option>             
-                        <option>N-TRIPLE</option>             
-                        <option>RDF/JSON</option>             
-                        <option>RDF/XML</option>             
-                        <option>RDF/XML-ABBREV</option>
-                    </select>
-                </div>
-                <div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="long Description of this setting">
-                    <label for="setting3">foxUseNif</label>
-                    <div class="onoffswitch">
-                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="setting3">
-                        <label class="onoffswitch-label" for="setting3">
-                            <span class="onoffswitch-inner"></span>
-                            <span class="onoffswitch-switch"></span>
-                        </label>
-                    </div>
-                </div>
+            <div class="sidebar-element" id="settings" style="top:50%; padding: 5px;">
+                
+                
+               
             </div>
             <div class="vdragbar" style="text-align: center;">
                 <hr class="pull-left" style=" margin: 3px; height: 4px; width: 100%;">

@@ -47,10 +47,10 @@ if ($_REQUEST['function'] == "getDatasets") {
         file_put_contents($user_dir . "user.json", json_encode($json));
         echo(json_encode($json));
     }
-} elseif ($_REQUEST['function'] == "getModules") {
+} elseif ($_REQUEST['function'] == "getSchema") {
     setJsonResponse();
-    $json = file_get_contents("../geolift" . DIRECTORY_SEPARATOR . "modules.json");
+    $json = file_get_contents("../geolift" . DIRECTORY_SEPARATOR . "schema.json");
     echo($json);
     die('');
-}
+} 
 ?>
