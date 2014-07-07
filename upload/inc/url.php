@@ -16,17 +16,6 @@ if (!is_dir($user_dir))
 
 global $user_dir;
 $ret = array();
-$now = new DateTime();
-
-if ($i != -1)
-    $fileName = $file["name"][$i];
-else
-    $fileName = $file["name"];
-
-if ($i != -1)
-    $tmpName = $file["tmp_name"][$i];
-else
-    $tmpName = $file["tmp_name"];
 
 $newFilename = md5($_REQUEST["url"]);
 
