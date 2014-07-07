@@ -1,1 +1,7 @@
 /nbproject/
+/.vagrant/
+Berksfile
+Berksfile.lock
+Vagrantfile
+packer-images.json
+/vagrant/

@@ -3,6 +3,7 @@
 error_reporting(E_ALL );//| E_STRICT);
 $base_dir = "files".DIRECTORY_SEPARATOR;
 include_once './inc/functions.php';
+include_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.php';
 
 if (isset($_FILES["files"])) {//upload new File
     include 'inc/upload.php';

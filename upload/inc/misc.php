@@ -51,7 +51,7 @@ if ($_REQUEST['function'] == "getDatasets") {
     }
 } elseif ($_REQUEST['function'] == "getSchema") {
     setJsonResponse();
-    $json = file_get_contents("../geolift" . DIRECTORY_SEPARATOR . "schema.json");
+    $json = shell_exec(GEOLIFT_SCHEMA_COMMAND);
     echo($json);
     die('');
 } elseif ($_REQUEST['function'] == "saveData") {
