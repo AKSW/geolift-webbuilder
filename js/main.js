@@ -26,25 +26,26 @@ function loadUserFiles() {
         //console.log(data);
         for (index = 0; index < data.length; ++index) {
             var panel = '<div class="panel panel-default" id="file_' + data[index].input + '"><div class="panel-heading">File: ' + data[index].filename + '\n\
-            <div class="pull-right">\n\
-<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" type="button" class="btn btn-success btn-xs ">add Query</a>\n\
-<button type="button" class="btn btn-danger btn-xs ">Remove File</button>\n\
-</div>\n\
-</div> <div class="panel-body"></div>\n\
-</div>';
+                        <div class="pull-right">\n\
+                        <a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" type="button" class="btn btn-success btn-xs ">add Query</a>\n\
+                        <a href="upload/?function=removeFile&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" class="removeFile btn btn-danger btn-xs ">Remove File</a>\n\
+                        </div>\n\
+                        </div> <div class="panel-body"></div>\n\
+                        </div>';
             $('#datasets .wrapper').append(panel);
 
             if (data[index].jobs.length === 0) {
-                $('#datasets .wrapper').find('#file_' + data[index].input + ' .panel-body').html('').append('<div class="alert alert-warning">\n\
-<strong>No Querys for this file!</strong>\n\
-<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" class="btn btn-success btn-xs ">add Query</a>\n\
-</div>');
+                $('#datasets .wrapper')
+                        .find('#file_' + data[index].input + ' .panel-body')
+                        .html('')
+                        .append('<div class="alert alert-warning">\n\
+                            <strong>No Querys for this file!</strong>\n\
+                            <a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" class="btn btn-success btn-xs ">add Query</a>\n\
+                            </div>');
 
             } else {
                 var state = "test";
                 for (i = 0; i < data[index].jobs.length; ++i) {
-
-
                     if (data[index].jobs[i].state === "waiting") {
                         state = '<i class="fa fa-clock-o fa-fw" data-toggle="tooltip" data-placement="right" title="Query is pending"></i>';
                     } else if (data[index].jobs[i].state === "running") {
@@ -54,15 +55,17 @@ function loadUserFiles() {
                     }
                     var buttons = '';
                     if (data[index].jobs[i].state === "waiting") {
-                        buttons = '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '&remove=1" class="btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this Query"><i class="fa fa-trash-o"></i></a>'
+                        buttons = '<a href="upload/?function=removeJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="removeJob btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this Query"><i class="fa fa-trash-o"></i></a>'
 
-                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a>'
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a>'
                         buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '&run=1" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-play"></i></a>'
                     }
-                    $('#datasets .wrapper').find('#file_' + data[index].input + ' .panel-body').append('<div class="row job-row">\n\
-<div class="col-xs-10">' + state + '<strong>Job #' + i + ': </strong>' + data[index].jobs[i].name + '</div><div class="col-xs-2">' + '\
-' + buttons + '</div>\n\
-</div>');
+                    $('#datasets .wrapper')
+                            .find('#file_' + data[index].input + ' .panel-body')
+                            .append('<div class="row job-row">\n\
+                                <div class="col-xs-10">' + state + '<strong>Job #' + i + ': </strong>' + data[index].jobs[i].name + '</div><div class="col-xs-2">' + '\
+                                ' + buttons + '</div>\n\
+                                </div>');
 
                 }
             }
@@ -87,6 +90,47 @@ $(document).ready(function() {
     $("#refreshBtn").unbind('click').click(function() {
         loadUserFiles();
     });
+    $('#submit').unbind('click').click(function() {
+        var url = $(this).parent().find('#urlInput').val();
+        $.getJSON("upload/",
+                {
+                    "url": url,
+                    "user": $user
+                }, function(data) {
+            if (typeof data.success !== typeof undefined)
+                loadUserFiles();
+            else
+                alert('Error:' + data.error);
+
+        });
+    });
+    $('body').on('click', ".removeFile", function(e) {
+        e.preventDefault();
+        var r = confirm("Are you sure you want to remove this File?");
+        if (r === true) {
+            var url = $(this).attr('href');
+            $.get(url, function(data) {
+                if (typeof data.success !== typeof undefined)
+                    loadUserFiles();
+                else
+                    alert('Error:' + data.error);
+            });
+        }
+    });
+    $('body').on('click', ".removeJob", function(e) {
+        e.preventDefault();
+        var r = confirm("Are you sure you want to remove this Query?");
+        if (r === true) {
+            
+            var url = $(this).attr('href');
+            $.get(url, function(data) {
+                if (typeof data.success !== typeof undefined)
+                    loadUserFiles();
+                else
+                    alert('Error:' + data.error);
+            });
+        }
+    })
     $("#loginbtn").unbind('click').click(function() {
         var mail = $(this).parents('.notloggedin').find('#email').eq(0).val();
         $.getJSON("upload/",

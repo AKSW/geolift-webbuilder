@@ -69,10 +69,10 @@ if ($_REQUEST['function'] == "getDatasets") {
     if (trim($_REQUEST['data']) == "")
         die('{"error":"data-field required"}');
     $file_dir = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR;
-    if (isset($_REQUEST['job'])){
+    if (isset($_REQUEST['job'])) {
         $newFilename = $_REQUEST['job'];
-        unlink($file_dir.$newFilename);
-    }else {
+        unlink($file_dir . $newFilename);
+    } else {
         $newFilename = "query_0.job";
         $run = 0;
         while (is_dir($file_dir . $newFilename) or is_file($file_dir . $newFilename)) {
@@ -82,6 +82,44 @@ if ($_REQUEST['function'] == "getDatasets") {
     file_put_contents($file_dir . $newFilename, urldecode($_REQUEST['data']));
     $return = array(
         'success' => "Saved.");
+    echo(json_encode($return));
+} elseif ($_REQUEST['function'] == "removeJob") {
+    setJsonResponse();
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    if (!isset($_REQUEST['job']))
+        die('{"error":"job-field required"}');
+    if (trim($_REQUEST['job']) == "")
+        die('{"error":"job-field required"}');
+    $file_dir = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR;
+    $newFilename = $_REQUEST['job'];
+    unlink($file_dir . $newFilename);
+
+    $return = array(
+        'success' => "Removed.");
+    echo(json_encode($return));
+} elseif ($_REQUEST['function'] == "removeFile") {
+    setJsonResponse();
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    $file_dir = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR;
+    unlink($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . '.json');
+    deleteDir($file_dir);
+
+    $return = array(
+        'success' => "Removed.");
     echo(json_encode($return));
 } elseif ($_REQUEST['function'] == "loadJob") {
     setJsonResponse();
