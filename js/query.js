@@ -8,7 +8,7 @@ $(document).ready(function() {
         selector: '[data-toggle=tooltip1]'
     });
     var splitter = function(event, ui) {
-        $('.sidebar').css({'height':"100%"});
+        $('.sidebar').css({'height': "100%"});
         var ah = parseInt(ui.position.top),
                 bh = parseInt($('.sidebar').height()) - ah;
         $('.sidebar-element').eq(0).css({height: ah});
@@ -24,66 +24,60 @@ $(document).ready(function() {
 var Query = window.Query || {};
 var Query = function() {
 
-
+    var $watchMode = false;
     var $modules = [];
     var $operators = [];
     var $query = [];
+    var $urlParams = {}
     var $user = "";
-    function reinitDraggable() {
-        $(".module").draggable({revert: "invalid",activeClass: "ui-state-active-my", appendTo: ".viewpoint", helper: "clone", cursor: "move"});
-        $(".arrow").droppable({
-            cursor:"crosshair",
-            activeClass: "ui-state-active-my",
-            drop: function(event, ui) {
-                addModule(ui.draggable.attr('id'), $(this).attr("id"));
-            }
-        });
-    }
     function init() {
         $modules = [];
         $operators = [];
         $query = [];
         $user = "";
+        $urlParams = {};
+        findParams();
+        if (typeof $urlParams["job"] !== typeof undefined)
+            loadQuery();
         $.getJSON("../upload/",
                 {
-                    "function": "getSchema",
+                    "function": "getSchema"
                 },
-                function(data) {
-                    
-                    for (var index in data.modules) {//each module
-                        var module1 = new Module();
-                        module1.setName(data.modules[index].title);
-                        module1.setDescription(data.modules[index].description);
-                        for (var index1 in data.modules[index].properties) {//each property
-                            if (typeof(data.modules[index].properties[index1].type) !== typeof(undefined))
-                                module1.addProperty(index1, data.modules[index].properties[index1].type, data.modules[index].properties[index1].description);
-                            else
-                                module1.addProperty(index1, data.modules[index].properties[index1].enum, data.modules[index].properties[index1].description);
-                        }
-                        $modules.push(module1);
-                    }
-                     for (var index in data.operators) {//each module
-                        var operator = new Operator();
-                        operator.setName(data.operators[index].title);
-                        operator.setDescription(data.operators[index].description);
-                        for (var index1 in data.operators[index].properties) {//each property
-                            if (typeof(data.operators[index].properties[index1].type) !== typeof(undefined))
-                                operator.addProperty(index1, data.operators[index].properties[index1].type, data.operators[index].properties[index1].description);
-                            else if (typeof(data.operators[index].properties[index1].enum) !== typeof(undefined))
-                                operator.addProperty(index1, data.operators[index].properties[index1].enum, data.operators[index].properties[index1].description);
-                        }
-                        console.log(operator);
-                        $operators.push(operator);
-                    }
-                    rebuildSchemaList();
+        function(data) {
+
+            for (var index in data.modules) {//each module
+                var module1 = new Module();
+                module1.setName(data.modules[index].title);
+                module1.setDescription(data.modules[index].description);
+                for (var index1 in data.modules[index].properties) {//each property
+                    if (typeof(data.modules[index].properties[index1].type) !== typeof(undefined))
+                        module1.addProperty(index1, data.modules[index].properties[index1].type, data.modules[index].properties[index1].description);
+                    else
+                        module1.addProperty(index1, data.modules[index].properties[index1].enum, data.modules[index].properties[index1].description);
                 }
+                $modules.push(module1);
+            }
+            for (var index in data.operators) {//each module
+                var operator = new Operator();
+                operator.setName(data.operators[index].title);
+                operator.setDescription(data.operators[index].description);
+                for (var index1 in data.operators[index].properties) {//each property
+                    if (typeof(data.operators[index].properties[index1].type) !== typeof(undefined))
+                        operator.addProperty(index1, data.operators[index].properties[index1].type, data.operators[index].properties[index1].description);
+                    else if (typeof(data.operators[index].properties[index1].enum) !== typeof(undefined))
+                        operator.addProperty(index1, data.operators[index].properties[index1].enum, data.operators[index].properties[index1].description);
+                }
+                $operators.push(operator);
+            }
+            rebuildSchemaList();
+        }
         );
         $query = {
             1: {
                 name: "start",
                 type: "module",
                 html: "S<br>T<br>A<br>R<br>T",
-                to: 3,
+                to: 2,
 //                y: 0,
 //                ymax: 1,
 //                x: 0
@@ -97,54 +91,133 @@ var Query = function() {
 //                ymax: 1,
 //                x: 4
             },
-            3: {
-                name: "split",
-                type: "operator",
-                html: "S<br>P<br>L<br>I<br>T",
-                to: [4, 4],
-//                y: 0,
-//                ymax: 1,
-//                x: 1
-            },
-            4: {
-                name: "merge",
-                type: "operator",
-                html: "M<br>E<br>R<br>G<br>E",
-                to: 2,
-//                y: 0,
-//                ymax: 1,
-//                x: 3,
-            },
+            /*            3: {
+             //                name: "split",
+             //                type: "operator",
+             //                html: "S<br>P<br>L<br>I<br>T",
+             //                to: [5, 4],
+             ////                y: 0,
+             ////                ymax: 1,
+             ////                x: 1
+             //            },
+             //            4: {
+             //                name: "merge",
+             //                type: "operator",
+             //                html: "M<br>E<br>R<br>G<br>E",
+             //                to: 2,
+             ////                y: 0,
+             ////                ymax: 1,
+             ////                x: 3,
+             //            },
+             //            5: {
+             //                name: "split",
+             //                type: "operator",
+             //                html: "S<br>P<br>L<br>I<br>T",
+             //                to: [6, 6],
+             ////                y: 0,
+             ////                ymax: 1,
+             ////                x: 1
+             //            },
+             //            6: {
+             //                name: "merge",
+             //                type: "operator",
+             //                html: "M<br>E<br>R<br>G<br>E",
+             //                to: 4
+             ////                y: 0,
+             ////                ymax: 1,
+             ////                x: 3,
+             //            },*/
         };
         redrawQuery();
-        bindClickEvents();
+        bindEvents();
+
+    }
+    function reinitDraggable() {
+        $(".module").draggable({revert: "invalid", activeClass: "ui-state-active-my", appendTo: ".viewpoint", helper: "clone", cursor: "move"});
+        $(".operator").draggable({revert: "invalid", activeClass: "ui-state-active-my", appendTo: ".viewpoint", helper: "clone", cursor: "move"});
+        $(".arrow").droppable({
+            cursor: "crosshair",
+            activeClass: "ui-state-active-my",
+            drop: function(event, ui) {
+                addQueryModule(ui.draggable.attr('id'), $(this).attr("id"));
+            }
+        });
+    }
+    function loadQuery() {
+        $.getJSON("../upload/",
+                {
+                    "function": "loadJob",
+                    "user": $urlParams.user,
+                    "file": $urlParams.file,
+                    "job": encodeURI($urlParams.job)
+                },
+        function(data) {
+            $('#jobName').val(data.name);
+            if (data.state !== "waiting") {
+                $('#saveBtn').addClass('disabled').attr('disabled', 'disabled');
+                $('#jobName').attr('disabled', 'disabled');
+                $watchMode = true;
+                if ($('#moduleList').find('*')[0])
+                    $('#moduleList').find('*').remove();
+
+                $('#moduleList').append('<div class=" clearfix alert alert-danger " style="margin-top:15px;" role="alert"><strong>Watch-Mode.</strong> You can only display this query.</div>').parent().find('.alert-danger').show(2000);
+            } else {
+                $query = {};
+                for (var index in data.job) {
+//                    console.log("OLD:", data.job[index]);
+                    var obj = {
+                        name: data.job[index].name,
+                        type: data.job[index].type,
+                        html: data.job[index].name.toUpperCase().split('').join('<br>'),
+                        to: data.job[index].next,
+                        properties: data.job[index].properties
+                    };
+                    $query[data.job[index].id] = obj;
+//                    console.log("NEW:", $query);
+
+                }
+                redrawQuery();
+            }
+//            console.log(data);
+        });
+
+    }
+    function findParams() {
+        var URLParams = decodeURIComponent(window.location.search).substr(1).split("&");
+        for (var index in URLParams) {
+            var par = URLParams[index].split('=');
+            $urlParams[par[0]] = (decodeURI(par[1]));
+        }
     }
     function trimModulePath2(coords, start) {
         if (typeof start === typeof undefined) {
             start = 1;
 //         console.log("$query-------------------------------START");
 //         for (var index in $query) {
-//            console.log("    Element ",index," --> ",$query[index].to);
+//            console.log("    Element ",index," --> ",$query[index].x);
 //         }
-//         console.log("old", old, " next", next);
+
         }
-        if (typeof coords === typeof undefined)
+        if (typeof coords === typeof undefined)//init-coordinates
             coords = {
                 x: 0,
                 y: 0,
                 ymax: 1
             };
+
         var startElement = $query[start];
         var hasNext = true;
         var length = 0; //length of current path
         var count = 0;
         var next = null, old = null;
         while (hasNext) {//find first split
+
             count++;
-            if (count > 100)
+            if (count > 20)//just for security
                 hasNext = false;
             old = next;
             next = (next === null) ? startElement : (typeof next.to === typeof [] && next.to[0] === next.to[1]) ? $query[next.to[0]] : $query[next.to];
+//            console.log("old", old, " next", next);
             if (next.type === "operator") {
                 if (next.name === "split") {
 //                    console.log("split");
@@ -155,42 +228,37 @@ var Query = function() {
                     var mergeElement1 = trimModulePath2(
                             {
                                 x: coords.x,
-                                y: coords.y,
-                                ymax: (coords.ymax + 1)
+                                y: (coords.y * 2),
+                                ymax: (coords.ymax * 2)
                             }
                     , next.to[0]);
                     var mergeElement2 = trimModulePath2(
                             {
                                 x: coords.x,
-                                y: (coords.y + 1),
-                                ymax: (coords.ymax + 1)
+                                y: ((coords.y * 2) + 1),
+                                ymax: (coords.ymax * 2)
                             }
                     , next.to[1]);
-                    var maxLength = 0;
                     if (mergeElement1 !== null) {
-                        maxLength = mergeElement1.x;
+                        coords.x = mergeElement1.x + 1;
                         next = $query[mergeElement1.to];
                     }
                     if (mergeElement2 !== null) {
-                        maxLength = mergeElement2.x;
+                        coords.x = mergeElement2.x + 1;
                         next = $query[mergeElement2.to];
                     }
                     if (mergeElement1 !== null && mergeElement2 !== null) {
                         if (mergeElement1.x > mergeElement2.x) {
-                            maxLength = mergeElement1.x;
+                            coords.x = mergeElement1.x + 1;
                             next = $query[mergeElement1.to];
                         } else {
-                            maxLength = mergeElement2.x;
+                            coords.x = mergeElement2.x + 1;
                             next = $query[mergeElement2.to];
                         }
                     }
                     if (mergeElement1 === null && mergeElement2 === null) {
-                        maxLength = length - 1;
                         next = $query[next.to[1]];
                     }
-
-                    length = maxLength;
-                    coords.x = maxLength + 1;
                     next.x = coords.x++;
                     next.y = coords.y;
                     next.ymax = coords.ymax;
@@ -209,122 +277,18 @@ var Query = function() {
                     return length;
                 }
             } else {
-                console.log("something bad happend:", next);
+                console.error("something bad happend:", next);
             }
 //                       console.log("next-x:",next.x," -name:",next.name);
 
         }
 
     }
-    function trimModulePath(depth, start) {
-        var startElement = start;
-        //set Depth and start when called without anything
-        if (typeof depth === typeof undefined) {
-            depth = 1;
-            for (var index in $query) {
-                if ($query[index].name === "start") { //höchste ebene und start
-                    startElement = $query[index];
-                }
-            }
-            var hasnext = true;
-            var next = startElement;
-            while (hasnext) {//find first split
-                if (next.name === "split")
-                    next = trimModulePath((depth + 1), next);
-                else if (next.name === "end") {
-                    hasnext = false;
-                } else {
-                    next = $query[next.to];
-                }
-            }
-        } else {
-//call from Split
-            var y1_hasnext = true, y2_hasnext = true;
-            var next = null, old = null;
-            var count = {
-                x1: 0,
-                x2: 0
-            };
-            var ws = 0;
-            while (y1_hasnext) {
-                console.log("y1_hasnext");
-                if (next === null) {
-                    old = startElement;
-                    next = $query[startElement.to[0]];
-                } else {
-                    old = next;
-                    next = $query[next.to];
-                }
-//count whitespaces
-
-                count.x1 += (next.x - old.x - 1);
-                if (next.name === "split")
-                    trimModulePath(depth + 1, next);
-                else if (next.name === "merge")
-                    y1_hasnext = false;
-            }
-            var next = null, old = null;
-            while (y2_hasnext) {
-                console.log("y2_hasnext");
-                if (next === null) {
-                    old = startElement;
-                    next = $query[startElement.to[1]];
-                } else {
-                    old = next;
-                    next = $query[next.to];
-                }
-//count whitespaces
-                count.x2 += (next.x - old.x - 1);
-                if (next.name === "split")
-                    next = trimModulePath(depth + 1, next);
-                else if (next.name === "merge") {
-                    if (count.x1 > 0 && count.x2 > 0) {//more then 1 Whitespace each
-                        ws = Math.min(count.x1, count.x2);
-                        console.log("tiefe:", depth, " whitespaces:", ws);
-                        for (var index in $query) {
-                            if ($query[index].x < next.x)
-                                continue;
-                            $query[index].x -= ws;
-                        }
-                    }
-                    y2_hasnext = false;
-                }
-            }
-//move all inside to the left
-            var y1_hasnext = true, y2_hasnext = true;
-            var next = null, old = null;
-            var xval = startElement.x;
-            while (y1_hasnext) {
-
-                console.log("y1_hasnext_2");
-                if (next === null) {
-                    old = startElement;
-                    next = $query[startElement.to[0]];
-                } else {
-                    old = next;
-                    next = $query[next.to];
-                }
-                if (next.name === "merge")
-                    break;
-                next.x = ++xval;
-            }
-            next = null;
-            xval = startElement.x;
-            while (y2_hasnext) {
-                console.log("y2_hasnext_2");
-                if (next === null) {
-                    old = startElement;
-                    next = $query[startElement.to[1]];
-                } else {
-                    old = next;
-                    next = $query[next.to];
-                }
-                if (next.name === "merge")
-                    break;
-                next.x = ++xval;
-            }
-            return next;
-        }
+    function addQueryModule(moduleId, arrowId) {
+        if (moduleId.indexOf("module") !== -1)
+            addModule(moduleId, arrowId);
+        else if (moduleId.indexOf("operator") !== -1)
+            addOperator(moduleId, arrowId);
     }
     function addModule(moduleId, arrowId) {
         moduleId = parseInt(moduleId.substr(moduleId.indexOf("_") + 1));
@@ -348,8 +312,6 @@ var Query = function() {
             type: "module",
             html: new_module.getName().toUpperCase().split('').join('<br>'),
             to: arrow_to,
-            x: query_block_from.x + 1,
-            y: query_block_from.y,
         };
         var max = 0;
         //find next free object Id
@@ -362,16 +324,83 @@ var Query = function() {
         if (typeof(query_block_from.to) === typeof(1)) {
 //module after Module
             query_block_from.to = max;
-            new_block.ymax = query_block_from.ymax;
         } else {//Merge(typeof()==typeof[])
-            new_block.ymax = query_block_from.ymax + 1;
             if (query_block_from.to[0] === arrow_to) {
                 query_block_from.to[0] = max;
             } else if (query_block_from.to[1] === arrow_to) {
                 query_block_from.to[1] = max;
-                new_block.y++;
             }
         }
+
+        $query[max] = new_block;
+        redrawQuery();
+//        console.log(new_module.getName(), arrowId, arrow_from, arrow_to);
+        editQueryBlock(max, new_module.getName());
+    }
+    function addOperator(moduleId, arrowId) {
+        moduleId = parseInt(moduleId.substr(moduleId.indexOf("_") + 1));
+        var arrow_from = arrowId.substr(arrowId.indexOf("_") + 1); //1_2
+        var arrow_to = parseInt(arrow_from.substr(arrow_from.indexOf("_") + 1)); //2
+        arrow_from = parseInt(arrow_from.substr(0, arrow_from.indexOf("_"))); //1
+        var query_block_from = null;
+        var query_block_to = null;
+        for (var index in $query) {
+            index = parseInt(index);
+            if (index === arrow_from)
+                query_block_from = $query[index];
+            if (index === arrow_to)
+                query_block_to = $query[index];
+        }
+        var new_module = (typeof($operators[moduleId]) !== typeof undefined) ? $operators[moduleId] : null;
+        //first create new node
+
+        if (new_module.getName() === "split") {
+            var new_split = {
+                name: new_module.getName(),
+                type: "operator",
+                html: new_module.getName().toUpperCase().split('').join('<br>'),
+            };
+            var new_merge = {
+                name: "merge",
+                type: "operator",
+                html: "merge".toUpperCase().split('').join('<br>'),
+                to: arrow_to,
+            };
+
+
+
+        }
+
+        var max = 0;
+        //find next free object Id
+        for (var index in $query) {
+            if (parseInt(index) >= parseInt(max))
+                max = index;
+        }
+        max++;
+        //set the from node to-value to the new block
+        if (typeof(query_block_from.to) === typeof(1)) {
+//module after Module
+            query_block_from.to = max;
+//            new_split.ymax = query_block_from.ymax;
+//
+//            new_merge.ymax = query_block_from.ymax;
+
+        } else {//Merge(typeof()==typeof[])
+//                        new_split.ymax = query_block_from.ymax+1;
+
+//            new_merge.ymax = query_block_from.ymax + 1;
+            if (query_block_from.to[0] === arrow_to) {
+                query_block_from.to[0] = max;
+            } else if (query_block_from.to[1] === arrow_to) {
+                query_block_from.to[1] = max;
+//                new_merge.y++;
+//                new_split.y++;
+
+            }
+        }
+        new_split.to = [max + 1, max + 1];
+
 //then move all Query_blocks with x>= new Block to the right
 //        for (var index in $query) {
 //            if ($query[index].x < new_block.x)
@@ -379,25 +408,99 @@ var Query = function() {
 //            $query[index].x++;
 //        }
 
-        $query[max] = new_block;
+        $query[max] = new_split;
+        $query[max + 1] = new_merge;
+
         redrawQuery();
 //        console.log(new_module.getName(), arrowId, arrow_from, arrow_to);
         editQueryBlock(max, new_module.getName());
     }
-    function bindClickEvents() {
+    function bindEvents() {
         $('body').on('click', '.queryblock .deleteBtn', function(event) {
             var elementName = $(this).parent().find(".elementName").eq(0).html();
             var elementId = $(this).parent().find(".elementId").eq(0).html();
             removeQueryBlock(elementId, elementName);
             event.preventDefault();
         });
+        $('body').on('click', '#backBtn', function() {
+            window.location.href = window.location.href.substring(0, window.location.href.lastIndexOf("/", window.location.href.lastIndexOf("/") - 1) + 1);
+        });
+        $('body').on('click', '#saveBtn', function() {
+            var query = {};
+            if ($(this).parents('.input-group').find('input').val() !== '')
+                query.name = $(this).parents('.input-group').find('input').val();
+            else
+                query.name = "newQuery";
+            query.job = [];
+            query.state = "waiting";
+            for (var index in $query) {
+                var step = {};
+                step.id = parseInt(index);
+                step.name = $query[index].name;
+                step.type = $query[index].type;
+                step.next = $query[index].to;
+                step.properties= $query[index].properties;
+                query.job.push(step);
+            }
+            $.post("../upload/", {
+                "function": "saveData",
+                "user": $urlParams.user,
+                "file": $urlParams.file,
+                "data": encodeURI(JSON.stringify(query)),
+                "job": $urlParams.job
+            },
+            function(data, textStatus) {
+                console.log(data);
+                if (typeof data.success !== typeof undefined) {
+                    $('#mainNav').after('<div class=" clearfix alert alert-success" style="margin-top:15px;" role="alert"><strong>Success.</strong> Query saved.</div>');
+                    window.setTimeout(function() {
+                        window.location.href = window.location.href.substring(0, window.location.href.lastIndexOf("/", window.location.href.lastIndexOf("/") - 1) + 1);
+                    }, 2000);
+                } else if (typeof data.error !== typeof undefined) {
+                    $('#mainNav').after('<div class=" clearfix alert alert-danger " style="margin-top:15px;" role="alert"><strong>Error.</strong> ' + data.error + '</div>').parent().find('.alert-danger').show(2000);
+                    ;
+                    window.setTimeout(function() {
+                        $('#mainNav').parent().find('.alert-danger').hide(2000);
+                        window.setTimeout(function() {
+                            $('#mainNav').parent().find('.alert-danger').remove();
+                        }, 2000);
+                    }, 2000);
+                }
+            }, "json");
+
+            console.log(query);
+
+
+        })
         $('body').on('click', '.queryblock .editBtn', function(event) {
             var elementName = $(this).parent().find(".elementName").eq(0).html();
             var elementId = $(this).parent().find(".elementId").eq(0).html();
-            alert(elementName + ' -- ' + elementId);
             editQueryBlock(elementId, elementName);
             event.preventDefault();
         });
+        $('#settings').on("change", '.form-control-select', function() {
+            changeProperty($(this), $(this).attr('id'), $(this).val());
+        });
+        $('#settings').on("change", '.form-control-checkbox', function() {
+            if ($(this).is(':checked'))
+                changeProperty($(this), $(this).attr('id'), true);
+            else
+                changeProperty($(this), $(this).attr('id'), false);
+        });
+
+        $('#settings').on("change", '.form-control-text', function() {
+            changeProperty($(this), $(this).attr('id'), $(this).val())
+        });
+
+
+    }
+    function changeProperty(element, key, value) {
+        var eleID = element.parents('#settings').find('.queryId').html();
+        if (typeof $query[eleID] === typeof undefined)
+            return;
+        if (typeof $query[eleID].properties === typeof undefined)
+            $query[eleID].properties = {};
+        $query[eleID].properties[key] = value;
     }
     function editQueryBlock(elementId, elementName) {
         $('#settings').find('*').remove();
@@ -409,24 +512,25 @@ var Query = function() {
                     Module = $modules[index];
             }
             $('#settings').append("<h5>Modul: " + QueryBlock.name + "</h5>");
+            $('#settings').append('<div class="hidden queryId">' + elementId + '</div>');
             var settings = Module.getProperties();
             //console.log(settings);
             var $div = '';
             for (var i in settings) {
-                var value=null;
-                if(typeof QueryBlock.properties !== typeof undefined &&
+                var value = null;
+                if (typeof QueryBlock.properties !== typeof undefined &&
                         typeof QueryBlock.properties[settings[i].name] !== typeof undefined)
-                       value=QueryBlock.properties[settings[i].name];
+                    value = QueryBlock.properties[settings[i].name];
                 if (settings[i].type === "string") {
                     $div += '<div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="' + settings[i].description + '" >'
                             + '<label for="' + settings[i].name + '">' + settings[i].name + '</label>'
-                            + '<input type="text" class="form-control" id="' + settings[i].name + '" value="'+((value!==null)?value:'')+'" >'
+                            + '<input type="text" class="form-control form-control-text" id="' + settings[i].name + '" value="' + ((value !== null) ? value : '') + '" >'
                             + '</div>';
                 } else if (settings[i].type === "boolean") {
 
                     $div += '<div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="' + settings[i].description + '" >'
                             + '<label for="' + settings[i].name + '">' + settings[i].name + '</label>'
-                            + ' <div class="onoffswitch"><input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="' + settings[i].name + '">'
+                            + ' <div class="onoffswitch"><input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox form-control-checkbox" id="' + settings[i].name + '">'
                             + '     <label class="onoffswitch-label" for="' + settings[i].name + '">'
                             + '         <span class="onoffswitch-inner"></span>'
                             + '         <span class="onoffswitch-switch"></span>'
@@ -448,15 +552,16 @@ var Query = function() {
 //                </div>
                     $div += '<div class="form-group" data-toggle="tooltip1" data-container="body" data-placement="right" title="' + settings[i].description + '" >'
                             + '<label for="' + settings[i].name + '">' + settings[i].name + '</label>'
-                            + '<select class="form-control" id="' + settings[i].name + '" >';
+                            + '<select class="form-control form-control-select" id="' + settings[i].name + '" >';
                     for (var j in  settings[i].enum) {
-                        
-                        $div +=  "<option>"+settings[i].enum[j]+"</option>";
+
+                        $div += "<option>" + settings[i].enum[j] + "</option>";
                     }
-                    $div +='</select></div>';
+                    $div += '</select></div>';
                 }
             }
-             $('#settings').append($div);
+            $('#settings').append($div);
+
         } else if (QueryBlock.type === "operator") {
             $('#settings').append("<h5>Operator: " + QueryBlock.name + "</h5>");
             $('#settings').append("<p>No Settings for this operator</p>");
@@ -530,7 +635,7 @@ var Query = function() {
                 if (typeof(element.to) !== typeof([])) {
 //add one Arrow behind
                     $div += '<div \n\
-                                style="left: ' + (element.x * 200 + 100 + 15) + 'px; width: 100px; top: ' + (top * 100) + '%; height: ' + (1 / element.ymax * 100 - 2) + '% " \n\
+                                style="left: ' + (element.x * 200 + 100 + 15) + 'px; width: 100px; top: ' + ((element.y / element.ymax) * 100) + '%; height: ' + (1 / element.ymax * 100 - 2) + '% " \n\
                                 class="queryblock arrow" \n\
                                 id="arrow_' + index + '_' + element.to + '">\n\
                                 <div class="text">\n\
@@ -544,7 +649,7 @@ var Query = function() {
                             </div>';
                 } else {
                     $div += '<div \n\
-                                style="left: ' + (element.x * 200 + 100 + 15) + 'px; width: 100px; top: ' + (top * 100 / 2) + '%; height: ' + (((1 / element.ymax * 100 - 2) / 2)) + '% " \n\
+                                style="left: ' + (element.x * 200 + 100 + 15) + 'px; width: 100px; top: ' + (((element.y * 2) / (element.ymax * 2)) * 100) + '%; height: ' + (((1 / element.ymax * 100 - 2) / 2)) + '% " \n\
                                 class="queryblock arrow" \n\
                                 id="arrow_' + index + '_' + element.to[0] + '">\n\
                                 <div class="text">\n\
@@ -557,7 +662,7 @@ var Query = function() {
                                 </div>\n\
                             </div>';
                     $div += '<div \n\
-                                style="left: ' + (element.x * 200 + 100 + 15) + 'px; width: 100px; top: ' + ((top + 1) * 100 / 2) + '%; height: ' + (1 / element.ymax * 100 - 2) / 2 + '% " \n\
+                                style="left: ' + (element.x * 200 + 100 + 15) + 'px; width: 100px; top: ' + (((element.y * 2 + 1) / (element.ymax * 2)) * 100) + '%; height: ' + ((1 / element.ymax * 100 - 2) / 2) + '% " \n\
                                 class="queryblock arrow" \n\
                                 id="arrow_' + index + '_' + element.to[1] + '">\n\
                                 <div class="text">\n\
@@ -580,17 +685,23 @@ var Query = function() {
     function rebuildSchemaList() {
         if ($('#moduleList').find('*')[0])
             $('#moduleList').find('*').remove();
-        for (var index in $modules) {
-            $('#moduleList').append('<div class="module" data-toggle="tooltip1" data-container="body" id="module_' + index + '" data-placement="right" title="' + $modules[index].getDescription() + '">\n\
+        if (!$watchMode) {
+            for (var index in $modules) {
+                $('#moduleList').append('<div class="module" data-toggle="tooltip1" data-container="body" id="module_' + index + '" data-placement="right" title="' + $modules[index].getDescription() + '">\n\
 \n\ ' + $modules[index].getName() + ' \n\
 </div>');
-        }
-        console.log($operators);
-        for (var index1 in $operators) {
-            if($operators[index1].getName()!=="merge")
-            $('#moduleList').append('<div class="operator" data-toggle="tooltip1" data-container="body" id="operator_' + index1 + '" data-placement="right" title="' + $operators[index1].getDescription() + '">\n\
+            }
+//        console.log($operators);
+
+            for (var index1 in $operators) {
+                if ($operators[index1].getName() !== "merge")
+                    $('#moduleList').append('<div class="operator" data-toggle="tooltip1" data-container="body" id="operator_' + index1 + '" data-placement="right" title="' + $operators[index1].getDescription() + '">\n\
 \n\ ' + $operators[index1].getName() + ' \n\
 </div>');
+            }
+        } else {
+            $('#moduleList').append('<div class=" clearfix alert alert-danger " style="margin-top:15px;" role="alert"><strong>Watch-Mode.</strong> You can only display this query.</div>').parent().find('.alert-danger').show(2000);
+
         }
         reinitDraggable();
     }

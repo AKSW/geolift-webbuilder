@@ -28,11 +28,11 @@
 
         <div class="sidebar">
             <div class="sidebar-element container" style="top:0px; ">
-                <div class="input-group" style="padding-top: 5px;">
+                <div class="input-group" style="padding-top: 5px;" id="mainNav">
                     <input id="jobName" type="text" placeholder="newQuery" data-container="body" data-toggle="tooltip1" data-placement="bottom" class="form-control" title="Query name">
                     <span class="input-group-btn">
-                        <button class="btn btn-success " data-toggle="tooltip1" data-container="body" data-placement="bottom" title="Save"><i class="fa fa-save"></i></button>
-                        <button class="btn btn-danger " data-toggle="tooltip1" data-container="body" data-placement="bottom" title="discard & close"><i class="fa fa-reply"></i></button>
+                        <button class="btn btn-success " id="saveBtn" data-toggle="tooltip1" data-container="body" data-placement="bottom" title="Save"><i class="fa fa-save"></i></button>
+                        <button class="btn btn-danger " id="backBtn" data-toggle="tooltip1" data-container="body" data-placement="bottom" title="discard & close"><i class="fa fa-reply"></i></button>
                     </span>
                 </div>
                 <hr>

@@ -54,10 +54,12 @@ function loadUserFiles() {
                     }
                     var buttons = '';
                     if (data[index].jobs[i].state === "waiting") {
-                        buttons = '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].name + '" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a>'
-                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].name + '&run=1" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-play"></i></a>'
+                        buttons = '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '&remove=1" class="btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this Query"><i class="fa fa-trash-o"></i></a>'
+
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a>'
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '&run=1" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-play"></i></a>'
                     }
-                    $('#datasets .wrapper').find('#file_' + data[index].input + ' .panel-body').append('<div class="row">\n\
+                    $('#datasets .wrapper').find('#file_' + data[index].input + ' .panel-body').append('<div class="row job-row">\n\
 <div class="col-xs-10">' + state + '<strong>Job #' + i + ': </strong>' + data[index].jobs[i].name + '</div><div class="col-xs-2">' + '\
 ' + buttons + '</div>\n\
 </div>');
