@@ -12,17 +12,16 @@ $user_dir = $base_dir . md5($_REQUEST['user']) . DIRECTORY_SEPARATOR;
 if (!is_dir($user_dir))
     die('{"error":"User not existings"}');
 
-
-
 global $user_dir;
 $ret = array();
 
 $newFilename = md5($_REQUEST["url"]);
 
-
 if (!is_dir($user_dir . $newFilename) && !is_file($user_dir . $newFilename)) {
     mkdir($user_dir . $newFilename);
 }
+$now = new DateTime();
+
 $ret["success"] = "URL added.";
 $ret["input"] = $newFilename;
 $ret["filename"] = $_REQUEST["url"];

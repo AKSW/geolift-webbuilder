@@ -58,7 +58,7 @@ function loadUserFiles() {
                         buttons = '<a href="upload/?function=removeJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="removeJob btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this Query"><i class="fa fa-trash-o"></i></a>'
 
                         buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a>'
-                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '&run=1" class="btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-play"></i></a>'
+                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-play"></i></a>'
                     }
                     $('#datasets .wrapper')
                             .find('#file_' + data[index].input + ' .panel-body')
@@ -116,8 +116,7 @@ $(document).ready(function() {
                     alert('Error:' + data.error);
             });
         }
-    });
-    $('body').on('click', ".removeJob", function(e) {
+    }).on('click', ".removeJob", function(e) {
         e.preventDefault();
         var r = confirm("Are you sure you want to remove this Query?");
         if (r === true) {
@@ -130,7 +129,21 @@ $(document).ready(function() {
                     alert('Error:' + data.error);
             });
         }
-    })
+    }).on('click', '.runJob', function(e) {
+        e.preventDefault();
+        var r = confirm("Are you sure you want to run this Query?");
+        if (r === true) {
+            
+            var url = $(this).attr('href');
+            $.get(url, function(data) {
+                if (typeof data.success !== typeof undefined)
+                    loadUserFiles();
+                else
+                    alert('Error:' + data.error);
+            });
+        }
+    });
+
     $("#loginbtn").unbind('click').click(function() {
         var mail = $(this).parents('.notloggedin').find('#email').eq(0).val();
         $.getJSON("upload/",
