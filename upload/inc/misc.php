@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2012-2014, Gurkware Solutions GbR  All rights reserved. 
  */
@@ -163,7 +164,7 @@ if ($_REQUEST['function'] == "getDatasets") {
     $file = $file_dir . ($_REQUEST['job']);
 
     $input_file_name = $file_dir . 'input.in';
-    
+
     $config_file_name = str_replace('.job', '.tsv', $_REQUEST['job']);
     $config_file_name = $file_dir . $config_file_name;
     $config_file_handler = @fopen($config_file_name, 'wb');
@@ -180,57 +181,55 @@ if ($_REQUEST['function'] == "getDatasets") {
     $json = file_get_contents($file);
     $query = json_decode($json, true);
 
-    if(!$query) {
+    if (!$query) {
         die('{"error": "Job config can not be parsed."}');
     }
-    if(!isset($query['job'])) {
+    if (!isset($query['job'])) {
         die('{"error": "Job config can not be parsed."}');
     }
-    if(!$query['job']) {
+    if (!$query['job']) {
         die('{"error": "Job config can not be parsed."}');
     }
-    if(FALSE === $config_file_handler) {
+    if (FALSE === $config_file_handler) {
         die('{"error": "Job config can not be written."}');
     }
-    if(is_dir($file) || !is_file($file)) {
+    if (is_dir($file) || !is_file($file)) {
         die('{"error":"Job not found."}');
     }
-    if(is_dir($input_file_name) || !is_file($input_file_name)) {
+    if (is_dir($input_file_name) || !is_file($input_file_name)) {
         die('{"error":"Job not found."}');
     }
-    if(is_dir($ouput_file_name)) {
+    if (is_dir($ouput_file_name)) {
         die('{"error":"Output file can not be written."}');
     }
-    if(is_file($ouput_file_name) && !is_writable($ouput_file_name)) {
+    if (is_file($ouput_file_name) && !is_writable($ouput_file_name)) {
         die('{"error":"Output file can not be written."}');
     }
-    if(is_dir($pid_file_name)) {
+    if (is_dir($pid_file_name)) {
         die('{"error":"PID file can not be written."}');
     }
-    if(is_dir($pid_file_name)) {
+    if (is_dir($pid_file_name)) {
         die('{"error":"PID file can not be written."}');
     }
-    if(is_file($pid_file_name) && !is_writable($pid_file_name)) {
+    if (is_file($pid_file_name) && !is_writable($pid_file_name)) {
         die('{"error":"PID file can not be written."}');
     }
 
     //filter start, end and operator elements from job list
     $modules = array_filter(
-        $query['job'], 
-        function($element) {
-            return (!in_array($element['name'], array('start', 'end')) && 'operator' != $element['type']);
-        }
+            $query['job'], function($element) {
+                return (!in_array($element['name'], array('start', 'end')) && 'operator' != $element['type']);
+            }
     );
 
     //sort modules array by element id
     uasort(
-        $modules, 
-        function($a, $b){
-            if($a['id'] == $b['id']) {
-                return 0;
+            $modules, function($a, $b) {
+                if ($a['id'] == $b['id']) {
+                    return 0;
+                }
+                return (($a['id'] < $b['id']) ? -1 : 1);
             }
-            return (($a['id'] < $b['id']) ? -1 : 1);
-        }
     );
 
     //re-index array
@@ -242,10 +241,10 @@ if ($_REQUEST['function'] == "getDatasets") {
         $newline = PHP_EOL;
         $key_inc = $key + 1;
 
-        if(!empty($module['properties'])) {
-            if('dereferencing' == $name) {
+        if (!empty($module['properties'])) {
+            if ('dereferencing' == $name) {
                 $properties = $module['properties'];
-                if(isset($properties['input'])) {
+                if (isset($properties['input'])) {
                     $properties = $properties['input'];
                     $properties = explode(',', str_replace(array(';', "\t", "\r\n", "\r", "\n"), ',', $properties));
                     $properties = array_map('trim', $properties);
@@ -253,15 +252,15 @@ if ($_REQUEST['function'] == "getDatasets") {
 
                     foreach ($properties as $property) {
                         list($n, $v) = explode(' ', str_replace(array('\'', '"'), '', $property));
-                        $module['properties'][$n] = $v; 
+                        $module['properties'][$n] = $v;
                     }
                 }
             }
 
             foreach ($module['properties'] as $property_name => $property_value) {
-                if(is_bool($property_value)){
+                if (is_bool($property_value)) {
                     $property_value = $property_value ? 'true' : 'false';
-                } 
+                }
 
                 $line = "{$key_inc} {$name} {$property_name} {$property_value}{$newline}";
                 fwrite($config_file_handler, $line);
@@ -278,9 +277,7 @@ if ($_REQUEST['function'] == "getDatasets") {
 
     //prepare geolift command
     $command = str_replace(
-        array('{{INPUT_FILE}}', '{{CONFIG_FILE}}', '{{OUTPUT_FILE}}'),
-        array($input_file_name, $config_file_name, $ouput_file_name),
-        GEOLIFT_RUN_COMMAND
+            array('{{INPUT_FILE}}', '{{CONFIG_FILE}}', '{{OUTPUT_FILE}}'), array($input_file_name, $config_file_name, $ouput_file_name), GEOLIFT_RUN_COMMAND
     );
     //start geolift in separate process, suppress all outputs and save PID to pid file
     $command = "nohup {$command} > {$log_file_name} 2>&1 & echo $!";
@@ -288,12 +285,61 @@ if ($_REQUEST['function'] == "getDatasets") {
 
     //$return_var = 0 : exec started command successfully
     //$out[0] : contains PID
-    if(0 === $return_var && isset($out[0])) {
+    if (0 === $return_var && isset($out[0])) {
         file_put_contents($pid_file_name, $out[0]);
+        $query['state'] = 'running';
+        file_put_contents($file, json_encode($query));
         echo json_encode($success);
         die('');
     }
 
     die('{"error":"Unknown error occurred."}');
+} elseif ($_REQUEST['function'] == 'getOutput') {
+    setJsonResponse();
+    $success = array('success' => true);
+
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    if (!isset($_REQUEST['job']))
+        die('{"error":"job-field required"}');
+    if (trim($_REQUEST['job']) == "")
+        die('{"error":"job-field required"}');
+
+    $ouput_file_name = str_replace('.job', '.out', $_REQUEST['job']);
+
+    $file_dir = realpath($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    $file = $file_dir . ($ouput_file_name);
+    header("Content-disposition: attachment; filename=" . $ouput_file_name);
+    readfile($file);
+
+} elseif ($_REQUEST['function'] == 'getLogOutput') {
+    setJsonResponse();
+    $success = array('success' => true);
+
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    if (!isset($_REQUEST['job']))
+        die('{"error":"job-field required"}');
+    if (trim($_REQUEST['job']) == "")
+        die('{"error":"job-field required"}');
+
+    $ouput_file_name = str_replace('.job', '.log', $_REQUEST['job']);
+
+    $file_dir = realpath($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    $file = $file_dir . ($ouput_file_name);
+    header("Content-disposition: attachment; filename=" . $ouput_file_name);
+    readfile($file);
 }
 ?>

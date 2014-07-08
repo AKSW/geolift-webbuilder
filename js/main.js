@@ -55,10 +55,13 @@ function loadUserFiles() {
                     }
                     var buttons = '';
                     if (data[index].jobs[i].state === "waiting") {
-                        buttons = '<a href="upload/?function=removeJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="removeJob btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this Query"><i class="fa fa-trash-o"></i></a>'
-
-                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-pencil"></i></a>'
-                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-play"></i></a>'
+                        buttons += '<a href="upload/?function=removeJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="removeJob btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this Query"><i class="fa fa-fw fa-trash-o"></i></a>';
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-fw fa-pencil"></i></a>';
+                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-fw fa-play"></i></a>';
+                    }
+                    if (data[index].jobs[i].state === "done" ||data[index].jobs[i].state === "running") {
+                        buttons += '<a target="_blank" href="upload/?function=getOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getOutput btn btn-success btn-xs pull-right"><i class="fa fa-fw fa-download "  data-toggle="tooltip" data-placement="left" title="download Output of this Query"></i></a>';
+                        buttons += '<a target="_blank" href="upload/?function=getLogOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getLogOutput btn btn-success btn-xs pull-right" ><i class="fa fa-fw fa-bars" data-toggle="tooltip" data-placement="left" title="download current Logfile of this Query"></i></a>';
                     }
                     $('#datasets .wrapper')
                             .find('#file_' + data[index].input + ' .panel-body')

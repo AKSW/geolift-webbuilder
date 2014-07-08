@@ -37,6 +37,12 @@ body>.container{
     margin-top: 40px;
 
 }
+.job-row{
+    margin-bottom: 5px;
+}
 .job-row:hover{
     background: #ccc;
+}
+.job-row .btn{
+    margin-left: 5px;
 }
