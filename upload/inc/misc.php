@@ -243,6 +243,21 @@ if ($_REQUEST['function'] == "getDatasets") {
         $key_inc = $key + 1;
 
         if(!empty($module['properties'])) {
+            if('dereferencing' == $name) {
+                $properties = $module['properties'];
+                if(isset($properties['input'])) {
+                    $properties = $properties['input'];
+                    $properties = explode(',', str_replace(array(';', "\t", "\r\n", "\r", "\n"), ',', $properties));
+                    $properties = array_map('trim', $properties);
+                    $module['properties'] = array();
+
+                    foreach ($properties as $property) {
+                        list($n, $v) = explode(' ', str_replace(array('\'', '"'), '', $property));
+                        $module['properties'][$n] = $v; 
+                    }
+                }
+            }
+
             foreach ($module['properties'] as $property_name => $property_value) {
                 if(is_bool($property_value)){
                     $property_value = $property_value ? 'true' : 'false';
@@ -257,7 +272,7 @@ if ($_REQUEST['function'] == "getDatasets") {
 
     //create output and log files if they don't exists already
     touch($ouput_file_name);
-    
+
     @unlink($log_file_name);
     touch($log_file_name);
 
@@ -270,7 +285,6 @@ if ($_REQUEST['function'] == "getDatasets") {
     //start geolift in separate process, suppress all outputs and save PID to pid file
     $command = "nohup {$command} > {$log_file_name} 2>&1 & echo $!";
     exec($command, $out, $return_var);
-    var_dump($command);
 
     //$return_var = 0 : exec started command successfully
     //$out[0] : contains PID
