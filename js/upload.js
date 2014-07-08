@@ -80,7 +80,6 @@ var Upload = function() {
             fileOnProgress(e);
         };
         xhr.send($formData);
-
     }
     function initFileDropper() {
         $($filedropWrapper).on('dragenter', function(e) {

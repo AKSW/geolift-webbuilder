@@ -5,3 +5,4 @@ Berksfile.lock
 Vagrantfile
 packer-images.json
 /vagrant/
+.DS_Store
