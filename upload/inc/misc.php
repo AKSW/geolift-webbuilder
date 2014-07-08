@@ -180,6 +180,11 @@ if ($_REQUEST['function'] == "getDatasets") {
 
     $json = file_get_contents($file);
     $query = json_decode($json, true);
+    
+    $user_file_dir = realpath($base_dir . md5(($_REQUEST['user'])) . '.json' ) ;
+
+    $Filejson = file_get_contents($user_file_dir);
+    $Filequery = json_decode($Filejson, true);
 
     if (!$query) {
         die('{"error": "Job config can not be parsed."}');
@@ -193,11 +198,15 @@ if ($_REQUEST['function'] == "getDatasets") {
     if (FALSE === $config_file_handler) {
         die('{"error": "Job config can not be written."}');
     }
-    if (is_dir($file) || !is_file($file)) {
-        die('{"error":"Job not found."}');
-    }
-    if (is_dir($input_file_name) || !is_file($input_file_name)) {
-        die('{"error":"Job not found."}');
+    if (!$Filequery['url']) {
+        if (is_dir($file) || !is_file($file)) {
+            die('{"error":"Job not found."}');
+        }
+        if (is_dir($input_file_name) || !is_file($input_file_name)) {
+            die('{"error":"Job not found."}');
+        }
+    }else{
+        $input_file_name=$query['filename'];
     }
     if (is_dir($ouput_file_name)) {
         die('{"error":"Output file can not be written."}');
@@ -280,8 +289,16 @@ if ($_REQUEST['function'] == "getDatasets") {
             array('{{INPUT_FILE}}', '{{CONFIG_FILE}}', '{{OUTPUT_FILE}}'), array($input_file_name, $config_file_name, $ouput_file_name), GEOLIFT_RUN_COMMAND
     );
     //start geolift in separate process, suppress all outputs and save PID to pid file
-    $command = "nohup {$command} > {$log_file_name} 2>&1 & echo $!";
-    exec($command, $out, $return_var);
+    $command = "nohup {$command} > {$log_file_name} 2>&1\n";
+
+
+    $command.= "php " . GEOLIFT_BASE_PATH . DS . "upload" . DS . "inc" . DS . "sendMail.php " . md5(($_REQUEST['user'])) . " " . (($_REQUEST['file'])) . " " . (($_REQUEST['job'])) . " ";
+    //write SH for command and run it
+    $run_file_name = str_replace('.job', '.sh', $_REQUEST['job']);
+
+    $run_file_name = $file_dir . $run_file_name;
+    file_put_contents($run_file_name, $command);
+    exec("sh $run_file_name & echo $!", $out, $return_var);
 
     //$return_var = 0 : exec started command successfully
     //$out[0] : contains PID
@@ -317,7 +334,6 @@ if ($_REQUEST['function'] == "getDatasets") {
     $file = $file_dir . ($ouput_file_name);
     header("Content-disposition: attachment; filename=" . $ouput_file_name);
     readfile($file);
-
 } elseif ($_REQUEST['function'] == 'getLogOutput') {
     setJsonResponse();
     $success = array('success' => true);

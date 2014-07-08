@@ -21,12 +21,13 @@ if (!is_dir($user_dir . $newFilename) && !is_file($user_dir . $newFilename)) {
     mkdir($user_dir . $newFilename);
 }
 $now = new DateTime();
-
-$ret["success"] = "URL added.";
+$return=array();
+$return["success"] = "URL added.";
 $ret["input"] = $newFilename;
 $ret["filename"] = $_REQUEST["url"];
+$ret['url']=true;
 $ret["upload"] = $now->getTimestamp();
 
 file_put_contents($user_dir . $newFilename . ".json", json_encode($ret));
-echo json_encode($ret);
+echo json_encode($return);
 ?>

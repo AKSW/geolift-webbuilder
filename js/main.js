@@ -59,9 +59,12 @@ function loadUserFiles() {
                         buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-fw fa-pencil"></i></a>';
                         buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-fw fa-play"></i></a>';
                     }
-                    if (data[index].jobs[i].state === "done" ||data[index].jobs[i].state === "running") {
+                    if (data[index].jobs[i].state === "done" || data[index].jobs[i].state === "running") {
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="view this Query"><i class="fa fa-fw fa-eye"></i></a>';
                         buttons += '<a target="_blank" href="upload/?function=getOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getOutput btn btn-success btn-xs pull-right"><i class="fa fa-fw fa-download "  data-toggle="tooltip" data-placement="left" title="download Output of this Query"></i></a>';
                         buttons += '<a target="_blank" href="upload/?function=getLogOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getLogOutput btn btn-success btn-xs pull-right" ><i class="fa fa-fw fa-bars" data-toggle="tooltip" data-placement="left" title="download current Logfile of this Query"></i></a>';
+                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="rerun this Query"><i class="fa fa-fw fa-refresh"></i></a>';
+
                     }
                     $('#datasets .wrapper')
                             .find('#file_' + data[index].input + ' .panel-body')
@@ -123,7 +126,7 @@ $(document).ready(function() {
         e.preventDefault();
         var r = confirm("Are you sure you want to remove this Query?");
         if (r === true) {
-            
+
             var url = $(this).attr('href');
             $.get(url, function(data) {
                 if (typeof data.success !== typeof undefined)
@@ -136,7 +139,7 @@ $(document).ready(function() {
         e.preventDefault();
         var r = confirm("Are you sure you want to run this Query?");
         if (r === true) {
-            
+
             var url = $(this).attr('href');
             $.get(url, function(data) {
                 if (typeof data.success !== typeof undefined)

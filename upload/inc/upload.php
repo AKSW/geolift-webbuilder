@@ -24,16 +24,16 @@ function handleUpload($file, $i = -1) {
 
     $newFilename = md5_file($tmpName);
 
-   
+
     if (!is_dir($user_dir . $newFilename) && !is_file($user_dir . $newFilename)) {
         mkdir($user_dir . $newFilename);
-        
-        move_uploaded_file($tmpName, $user_dir . $newFilename.DIRECTORY_SEPARATOR."input.in");
+
+        move_uploaded_file($tmpName, $user_dir . $newFilename . DIRECTORY_SEPARATOR . "input.in");
     }
     $ret["input"] = $newFilename;
-    $ret["filename"] = $fileName;    
+    $ret["filename"] = $fileName;
     $ret["upload"] = $now->getTimestamp();
-
+    $ret['url'] = false;
     file_put_contents($user_dir . $newFilename . ".json", json_encode($ret));
     return $ret;
 }
