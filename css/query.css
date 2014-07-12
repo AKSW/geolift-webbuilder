@@ -1,0 +1,213 @@
+/*
+ * Copyright 2014 Alrik Hausdorf
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+root { 
+    display: block;
+}
+.sidebar{
+    width: 250px;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+}
+.vdragbar{
+    background-color: #c0c0c0;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    height: 8px;
+    margin-top: -4px;
+    cursor: row-resize;
+}
+.sidebar>.sidebar-element{
+    position: absolute;
+    margin: 0px;
+    height: 50%;
+    width: 100%;
+    background-color: #c4e3f3;
+    overflow: auto;
+}
+.viewpoint{
+    left: 250px;
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    /*padding:15px;*/
+    margin: 5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.queryblock .options{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 30px;
+    font-size: initial;
+}
+.queryblock:not(.arrow){
+     -moz-box-shadow:    0px 0px 3px 3px #ccc;
+    -webkit-box-shadow: 0px 0px 3px 3px #ccc;
+    box-shadow:         0px 0px 3px 3px #ccc;
+}
+.queryblock{
+    margin-top: 1%;
+    margin-bottom: 1%;
+    position: absolute;
+    height: 100%;
+    background: #FFFFFF;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+   
+}
+.queryblock.arrow{
+    background: none;
+    text-align: center;
+}
+.queryblock.arrow.ui-state-active-my .fa-arrow-right{
+    display: none;
+    
+}
+.queryblock.arrow.ui-state-active-my .fa-plus-circle{
+    display: block;
+    
+}
+.queryblock.arrow .fa-plus-circle{
+    display: none;
+    
+}
+.startendBlock{
+    font-size: xx-large;
+}
+.startendBlock>.options{
+    display: none;
+}
+.queryblock>.text>.center-container{
+    display: table-cell; 
+    vertical-align: middle;
+}
+.queryblock>.text{
+    display: table; 
+    height: 100%; 
+    text-align: center; 
+    width: 100%; 
+    overflow: hidden;
+}
+
+/* start Module-Sidebar-style */
+#moduleList .module{
+     padding: 5px;
+    text-align: center;
+    background: #fff;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+body .module{
+    background: #c0c0c0;
+      padding: 5px;
+    text-align: center;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+/* start Module-Sidebar-style */
+#moduleList .operator{
+     padding: 5px;
+    text-align: center;
+    background: #fff;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+body .operator{
+    background: #c0c0c0;
+      padding: 5px;
+    text-align: center;
+    display: block;
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    font-size: x-large;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+/* Start On/off-switch style*/
+.onoffswitch {
+    position: relative; width: 86px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 50px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 24px; padding: 0; line-height: 24px;
+    font-size: 19px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 10px;
+    background-color: #00FF1E; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 10px;
+    background-color: #FF0000; color: #FFFFFF;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 25px; margin: 1px;
+    background: #FFFFFF;
+    border: 2px solid #999999; border-radius: 50px;
+    position: absolute; top: 0; bottom: 0; right: 58px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
