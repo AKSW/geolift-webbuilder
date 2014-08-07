@@ -29,7 +29,7 @@ $(document).ready(function() {
     $('.vdragbar').draggable({
         axis: 'y',
         drag: splitter,
-        activeClass: "ui-state-active"
+        activeClass: "ui-state-active",
     });
     var query = new Query();
 });
@@ -40,11 +40,13 @@ var Query = function() {
     var $modules = [];
     var $operators = [];
     var $query = [];
-    var $urlParams = {};
+    var $urlParams = {}
+    var $user = "";
     function init() {
         $modules = [];
         $operators = [];
         $query = [];
+        $user = "";
         $urlParams = {};
         findParams();
         if (typeof $urlParams["job"] !== typeof undefined)
@@ -234,7 +236,7 @@ var Query = function() {
             } else {
                 console.error("something bad happend:", next);
             }
-
+            
         }
 
     }
