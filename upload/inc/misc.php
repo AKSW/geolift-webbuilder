@@ -218,6 +218,8 @@ if ($_REQUEST['function'] == "getDatasets") {
         if (is_dir($input_file_name) || !is_file($input_file_name)) {
             die('{"error":"Job not found."}');
         }
+        $input_file_name ='file://'.$input_file_name;
+
     } else {
         $input_file_name = '"'+$Filequery->filename+'"';
     }
