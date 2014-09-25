@@ -108,9 +108,11 @@ $(document).ready(function() {
     });
     $('#submit').unbind('click').click(function() {
         var url = $(this).parent().find('#urlInput').val();
+        var endpoint = $(this).parent().find('#endPointInput').val();
         $.getJSON("upload/",
                 {
                     "url": url,
+                    "endpoint": endpoint,
                     "user": $user
                 }, function(data) {
             if (typeof data.success !== typeof undefined)

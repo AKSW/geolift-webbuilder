@@ -1,0 +1,98 @@
+@prefix : <http://geoknow.org/specsontology/>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix geo: <http://w3.org/2003/01/geo/wgs84_pos#>.
+
+:d1 							a 				:Dataset;
+								:hasUri			<http://dbpedia.org/resource/Berlin>;
+								:FromEndPoint	<http://dbpedia.org/sparql>.
+
+:d2								a				:Dataset.
+
+:d3								a				:Dataset.
+
+:d4								a				:Dataset.
+
+:d5								a				:Dataset.
+
+:d6								a				:Dataset.
+
+:d7								a				:Dataset.
+
+:d8								a				:Dataset;
+								:outputFile		"GeoLiftBerlin.ttl";
+								:outputFormat	"Turtle".
+
+:dereferencing					a				:Module,
+												:DereferencingModule;
+								rdfs:label		"Derefencing Module";
+								:hasInput		:d1;
+								:hasOutput		:d2;
+								:hasParameter	:derefencingModuleParameter1.
+
+:derefencingModuleParameter1	a				:ModuleParameter,
+												:DerefencingModuleParameter;
+								:hasKey			"inputProperty1";
+								:hasValue		geo:lat.
+
+:split							a				:Operator,
+												:SplitOperator;
+								rdfs:label		"Split Operator";
+								:hasInput		:d2;
+								:hasOutput		:d3, 
+												:d4.
+
+:nlp							a				:Module,
+												:NLPModule;
+								rdfs:label		"NLP module";
+								:hasInput		:d3;
+								:hasOutput		:d5;
+								:hasParameter	:nlpParameter1,
+												:nlpParameter2.
+
+:nlpParameter1					a				:ModuleParameter,
+												:NLPModuleParameter;
+								:hasKey			"useFoxLight";
+								:hasValue		"OFF".
+
+:nlpParameter2					a				:ModuleParameter,
+												:NLPModuleParameter;
+								:hasKey			"askEndPoint";
+								:hasValue		false.
+
+:filter							a 				:Module,
+												:FilterModule;
+								rdfs:label		"Filter Module";
+								:hasInput		:d4;
+								:hasOutput		:d6;
+								:hasParameter	:filterParameter1.
+
+:filterParameter1				a 				:ModuleParameter,
+												:FilterModuleParameter;
+								:hasKey			"tripelsPattern";
+								:hasValue		"?s <http://dbpedia.org/ontology/abstract> ?o".
+
+:merge							a 				:Operator,
+												:MergeOperator;
+								rdfs:label		"Merge Operator";
+								:hasInput		:d6,
+												:d5;
+								:hasOutput		:d7.
+
+:conformation					a 				:Module,
+												:ConformationModule;
+								rdfs:label		"Conformation Module";
+								:hasInput		:d7;
+								:hasOutput		:d8;
+								:hasParameter	:conformationParameter1,
+												:conformationParameter2.
+
+:conformationParameter1 		a 				:ModuleParameter,
+												:ConformationParameter;
+								:hasKey			"sourceURI";
+								:hasValue		"http://dbpedia.org".
+
+:conformationParameter2			a 				:ModuleParameter,
+												:ConformationParameter;
+								:hasKey			"targetURI";
+								:hasValue		"http://geolift.org".
+

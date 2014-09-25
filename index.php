@@ -87,8 +87,11 @@ GeoLift is a spatial mapping component aims to enrich RDF datasets with geo-spat
                                 <div class="panel-body wrapper" >
                                     <form>
                                         <div class="form-group col-xs-12 col-sm-5">
-                                            <label for="urlInput">a new URL to dataset</label>
+                                            <label for="urlInput">Dataset from URL</label>
                                             <input type="text" id="urlInput" class="form-control" placeholder="a URL">
+                                            <span class="space-2  hidden-xs"></span>
+                                            <label for="urlInput">Dataset endpoint</label>
+                                            <input type="text" id="endPointInput" class="form-control" placeholder="an endpoint URL">
                                             <span class="space-2  hidden-xs"></span>
                                             <a class="btn btn-default col-xs-12" id="submit">go on with this dataset</a>
                                         </div>

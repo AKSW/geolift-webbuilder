@@ -177,7 +177,7 @@ if ($_REQUEST['function'] == "getDatasets") {
 
     $input_file_name = $file_dir . 'input.in';
 
-    $config_file_name = str_replace('.job', '.tsv', $_REQUEST['job']);
+    $config_file_name = str_replace('.job', '.ttl', $_REQUEST['job']);
     $config_file_name = $file_dir . $config_file_name;
     $config_file_handler = @fopen($config_file_name, 'wb');
 
@@ -213,15 +213,15 @@ if ($_REQUEST['function'] == "getDatasets") {
     }
     if (!$Filequery->url) {
         if (is_dir($file) || !is_file($file)) {
-            die('{"error":"Job not found."}');
+            die('{"error":"Job not foundd."}');
         }
         if (is_dir($input_file_name) || !is_file($input_file_name)) {
             die('{"error":"Job not found."}');
         }
-        $input_file_name ='file://'.$input_file_name;
+        $input_file_name = $input_file_name;
 
     } else {
-        $input_file_name = '"'+$Filequery->filename+'"';
+        $input_file_name = $Filequery->filename;
     }
     if (is_dir($ouput_file_name)) {
         die('{"error":"Output file can not be written."}');
@@ -239,60 +239,267 @@ if ($_REQUEST['function'] == "getDatasets") {
         die('{"error":"PID file can not be written."}');
     }
 
-    //filter start, end and operator elements from job list
-    $modules = array_filter(
-            $query['job'], function($element) {
-                return (!in_array($element['name'], array('start', 'end')) && 'operator' != $element['type']);
-            }
-    );
+    $config_elements = $query['job'];
+    
+    $dataset_counter = 1;
+    $parameter_counter = 1;
 
-    //sort modules array by element id
-    uasort(
-            $modules, function($a, $b) {
-                if ($a['id'] == $b['id']) {
-                    return 0;
+    $end = null;
+    $next = array();
+
+    $config_data = array();
+    $datasets = array();
+    $parameters = array();
+
+    foreach ($config_elements as $key => $element) {
+        if ('start' == $element['name']) {
+            $name = ':d' . $dataset_counter;
+            $dataset_counter++;
+
+            $next_id = $element['next'];
+            $next[] = $next_id;
+            
+            $config_data[$next_id] = array(
+                ':hasInput' => array(':d1')
+            );
+            if(!$Filequery->url) {
+                $datasets[':d1'] = array(
+                    'a' => ':Dataset',
+                    ':inputFile' => '"' . $input_file_name . '"'
+                );
+            } else {
+                $datasets[':d1'] = array(
+                    'a' => ':Dataset',
+                    ':hasUri' => '<' . $input_file_name . '>',
+                    ':FromEndPoint' => '<' . $Filequery->endpoint . '>'
+                );
+            }
+
+            break;
+        }
+    }
+
+    foreach ($config_elements as $key => $element) {
+        if ('end' == $element['name']) {
+            $end = $element;
+            break;
+        }
+    }
+
+    while(!empty($next)) {
+        $next_id = array_shift($next);
+
+        foreach ($config_elements as $key => $element) {
+            if($element['id'] == $next_id && $end['id'] !== $next_id) {
+                
+                $parameter_type_prefix = ucfirst($element['name']);
+                $config_data_type_prefix = ucfirst($element['name']);
+                $config_data_label_prefix = ucfirst($element['name']);
+                if('nlp' == $element['name']) {
+                    $parameter_type_prefix = strtoupper($element['name']);
+                    $config_data_type_prefix = strtoupper($element['name']);
+                    $config_data_label_prefix = strtoupper($element['name']);
                 }
-                return (($a['id'] < $b['id']) ? -1 : 1);
-            }
-    );
 
-    //re-index array
-    $modules = array_values($modules);
+                $parameter_name = ':' . $element['name'] . ucfirst($element['type']) . 'Parameter';
+                $parameter_type = ':' . ucfirst($element['type']) . 'Parameter, ' . ':' . $parameter_type_prefix . ucfirst($element['type']) . 'Parameter';
+                $config_data_name = ':' . $element['name'] . $element['id'];
+                $config_data_type = ':' . ucfirst($element['type']) . ', ' . ':' . $config_data_type_prefix . ucfirst($element['type']);
+                $config_data_label = '"' . $config_data_label_prefix . ' ' . ucfirst($element['type']) . '"';
 
-    //create config file
-    foreach ($modules as $key => $module) {
-        $name = $module['name'];
-        $newline = PHP_EOL;
-        $key_inc = $key + 1;
+                $next_element_ids = array();
+                if(is_array($element['next'])) {
+                    $next_element_ids = $element['next'];
+                } else if(null != $element['next']) {
+                    $next_element_ids[] = $element['next'];
+                }
 
-        if (!empty($module['properties'])) {
-            if ('dereferencing' == $name) {
-                $properties = $module['properties'];
-                if (isset($properties['input'])) {
-                    $properties = $properties['input'];
-                    $properties = explode(',', str_replace(array(';', "\t", "\r\n", "\r", "\n"), ',', $properties));
-                    $properties = array_map('trim', $properties);
-                    $module['properties'] = array();
+                if(!isset($config_data[$next_id])) {
+                    $config_data[$next_id] = array();
+                }
 
-                    foreach ($properties as $property) {
-                        list($n, $v) = explode(' ', str_replace(array('\'', '"'), '', $property));
-                        $module['properties'][$n] = $v;
+                if(!isset($config_data[$next_id]['name'])) {
+                    $config_data[$next_id]['name'] = $config_data_name;
+                }
+
+                if(!isset($config_data[$next_id]['a'])) {
+                    $config_data[$next_id]['a'] = $config_data_type;
+                }
+
+                if(!isset($config_data[$next_id]['rdfs:label'])) {
+                    $config_data[$next_id]['rdfs:label'] = $config_data_label;
+                }
+
+                foreach ($next_element_ids as $next_element_id) {
+                    $name = ':d' . $dataset_counter;
+                    $dataset_counter++;
+
+                    if($next_element_id != $end['id']) {
+                        if(!isset($config_data[$next_element_id])) {
+                            $config_data[$next_element_id] = array();
+                        }
+
+                        if(!isset($config_data[$next_element_id][':hasInput'])) {
+                            $config_data[$next_element_id][':hasInput'] = array();
+                        }
+
+                        $config_data[$next_element_id][':hasInput'][] = $name;
+
+                        $datasets[$name] = array(
+                            'a' => ':Dataset'
+                        );
+                    }
+
+                    if(!in_array($next_element_id, $next)) {
+                        $next[] = $next_element_id;
+                    }
+
+                    if(!isset($config_data[$next_id][':hasOutput'])) {
+                        $config_data[$next_id][':hasOutput'] = array();
+                    }
+
+                    $config_data[$next_id][':hasOutput'][] = $name;
+
+                    if($end['id'] == $next_element_id) {
+                        $datasets[$name] = array(
+                            'a' => ':Dataset',
+                            ':outputFile' => '"' . $ouput_file_name . '"',
+                            ':outputFormat' => '"Turtle"'
+                        );
+                    } else {
+                        $datasets[$name] = array(
+                            'a' => ':Dataset'
+                        );
+                    }
+                }
+
+                if(isset($element['properties'])) {
+                    if(!isset($config_data[$next_id][':hasParameter'])) {
+                        $config_data[$next_id][':hasParameter'] = array();
+                    }
+
+                    if('dereferencing' == $element['name']) {
+                        if(isset($element['properties']['predicate'], $element['properties']['predicate value'])) {
+                            $parameter_key = $element['properties']['predicate'];
+                            $parameter_value = $element['properties']['predicate value'];
+
+                            $element['properties'][$parameter_key] = $parameter_value;
+                        }
+                        unset($element['properties']['predicate']);
+                        unset($element['properties']['predicate value']);
+                    }
+
+                    foreach ($element['properties'] as $parameter_key => $parameter_value) {
+                        //simple match against a URI
+                        if(!preg_match('@^\s*([^:]+://.*)$@', $parameter_value, $matches) && false !== strpos($parameter_value, ':')) {
+                            $parameter_value = trim($parameter_value);
+                            $parameter['a'] = $parameter_type;
+                            $parameter[':hasKey'] = '"' . $parameter_key . '"';
+                            $parameter[':hasValue'] = $parameter_value;
+                        } else if (is_bool($parameter_value)) {
+                            $parameter_value = ($parameter_value ? 'true' : 'false');
+                            
+                            $parameter_value = trim($parameter_value);
+                            $parameter['a'] = $parameter_type;
+                            $parameter[':hasKey'] = '"' . $parameter_key . '"';
+                            $parameter[':hasValue'] = $parameter_value;
+                        } else {
+                            $parameter_value = trim($parameter_value);
+                            $parameter['a'] = $parameter_type;
+                            $parameter[':hasKey'] = '"' . $parameter_key . '"';
+                            $parameter[':hasValue'] = '"' . $parameter_value . '"';
+                        }
+                        
+                        $config_data[$next_id][':hasParameter'][] = $parameter_name . $parameter_counter;
+                        $parameters[$parameter_name . $parameter_counter] = $parameter;
+                        $parameter_counter++;
                     }
                 }
             }
+        }
+    }
 
-            foreach ($module['properties'] as $property_name => $property_value) {
-                if (is_bool($property_value)) {
-                    $property_value = $property_value ? 'true' : 'false';
-                }
+    //create config file
+    //write header
+    $newline = PHP_EOL;
+    $lines = array(
+        "@prefix : <http://geoknow.org/specsontology/> .{$newline}",
+        "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .{$newline}",
+        "@prefix geo: <http://w3.org/2003/01/geo/wgs84_pos#> .{$newline}"
+    );
+    foreach ($lines as $line) {
+        fwrite($config_file_handler, $line);
+    }
 
-                $line = "{$key_inc} {$name} {$property_name} {$property_value}{$newline}";
-                fwrite($config_file_handler, $line);
+    //write datasets
+    foreach ($datasets as $name => $dataset) {
+        $i = 0;
+        foreach ($dataset as $key => $value) {
+            $separator = ';';
+            $pre = '';
+            if($i >= count($dataset) - 1) {
+                $separator = '.';
             }
+
+            if($i == 0) {
+                $pre = $name;
+            }
+
+            $line = "{$pre} {$key} {$value} {$separator}{$newline}";
+            fwrite($config_file_handler, $line);
+
+            $i++;
+        }
+    }
+
+    //write parameters
+    foreach ($parameters as $name => $parameter) {
+        $i = 0;
+        foreach ($parameter as $key => $value) {
+            $separator = ';';
+            $pre = '';
+            if($i >= count($parameter) - 1) {
+                $separator = '.';
+            }
+
+            if($i == 0) {
+                $pre = $name;
+            }
+
+            $line = "{$pre} {$key} {$value} {$separator}{$newline}";
+            fwrite($config_file_handler, $line);
+
+            $i++;
+        }
+    }
+
+    //write modules and operators
+    foreach ($config_data as $config_element) {
+        $name = $config_element['name'];
+        unset($config_element['name']);
+        $i = 0;
+        foreach ($config_element as $key => $value) {
+            $separator = ';';
+            $pre = '';
+            if($i >= count($config_element) - 1) {
+                $separator = '.';
+            }
+
+            if($i == 0) {
+                $pre = $name;
+            }
+
+            if(is_array($value)) {
+                $value = implode(', ', $value);
+            }
+
+            $line = "{$pre} {$key} {$value} {$separator}{$newline}";
+            fwrite($config_file_handler, $line);
+
+            $i++;
         }
     }
     fclose($config_file_handler);
-
     //create output and log files if they don't exists already
     touch($ouput_file_name);
 
@@ -300,12 +507,9 @@ if ($_REQUEST['function'] == "getDatasets") {
     touch($log_file_name);
 
     //prepare geolift command
-    $command = str_replace(
-            array('{{INPUT_FILE}}', '{{CONFIG_FILE}}', '{{OUTPUT_FILE}}'), array($input_file_name, $config_file_name, $ouput_file_name), GEOLIFT_RUN_COMMAND
-    );
+    $command = str_replace('{{CONFIG_FILE}}', $config_file_name, GEOLIFT_RUN_COMMAND);
     //start geolift in separate process, suppress all outputs and save PID to pid file
     $command = "nohup {$command} > {$log_file_name} 2>&1 ".PHP_EOL;
-
 
     $command.= "php " . GEOLIFT_BASE_PATH . DS . "upload" . DS . "inc" . DS . "sendMail.php " . md5(($_REQUEST['user'])) . " " . (($_REQUEST['file'])) . " " . (($_REQUEST['job'])) . " ";
     //write SH for command and run it

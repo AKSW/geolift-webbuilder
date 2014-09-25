@@ -18,6 +18,8 @@ if (!isset($_REQUEST["user"]))
     die('{"error":"No User defined"}');
 if (!isset($_REQUEST["url"]))
     die('{"error":"No URL defined"}');
+if (!isset($_REQUEST["endpoint"]))
+    die('{"error":"No endpoint URL defined"}');
 
 $user_dir = $base_dir . md5($_REQUEST['user']) . DIRECTORY_SEPARATOR;
 if (!is_dir($user_dir))
@@ -37,6 +39,7 @@ $return["success"] = "URL added.";
 $ret["input"] = $newFilename;
 $ret["filename"] = $_REQUEST["url"];
 $ret['url']=true;
+$ret["endpoint"] = $_REQUEST["endpoint"];
 $ret["upload"] = $now->getTimestamp();
 
 file_put_contents($user_dir . $newFilename . ".json", json_encode($ret));
