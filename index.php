@@ -44,7 +44,7 @@
                 <div class="col-xs-12">
                     <h1 id="home">GeoLift <small>Web-Builder</small></h1>
                     <p>
-GeoLift is a spatial mapping component aims to enrich RDF datasets with geo-spatial information. To achieve this goal, GeoLit relies on three atomic modules based on dereferencing, linking and NLP. GeoLift implemented in Java as an open-source project.
+GeoLift is a spatial mapping component aims to enrich RDF datasets with geo-spatial information. To achieve this goal, GeoLit relies on several modules and operators. GeoLift is implemented in Java as an open-source project.
 
                     </p>
                 </div>

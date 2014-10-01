@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2014 Alrik Hausdorf and Eugen Rein
  *
@@ -94,111 +93,23 @@ if ($_REQUEST['function'] == "getDatasets") {
     file_put_contents($file_dir . $newFilename, urldecode($_REQUEST['data']));
     $return = array(
         'success' => "Saved.");
-    echo(json_encode($return));
-} elseif ($_REQUEST['function'] == "removeJob") {
-    setJsonResponse();
-    if (!isset($_REQUEST['user']))
-        die('{"error":"user-field required"}');
-    if (trim($_REQUEST['user']) == "")
-        die('{"error":"user-field required"}');
-    if (!isset($_REQUEST['file']))
-        die('{"error":"file-field required"}');
-    if (trim($_REQUEST['file']) == "")
-        die('{"error":"file-field required"}');
-    if (!isset($_REQUEST['job']))
-        die('{"error":"job-field required"}');
-    if (trim($_REQUEST['job']) == "")
-        die('{"error":"job-field required"}');
-    $file_dir = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR;
-    $newFilename = $_REQUEST['job'];
-    unlink($file_dir . $newFilename);
 
-    $return = array(
-        'success' => "Removed.");
-    echo(json_encode($return));
-} elseif ($_REQUEST['function'] == "removeFile") {
-    setJsonResponse();
-    if (!isset($_REQUEST['user']))
-        die('{"error":"user-field required"}');
-    if (trim($_REQUEST['user']) == "")
-        die('{"error":"user-field required"}');
-    if (!isset($_REQUEST['file']))
-        die('{"error":"file-field required"}');
-    if (trim($_REQUEST['file']) == "")
-        die('{"error":"file-field required"}');
-    $file_dir = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR;
-    unlink($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . '.json');
-    deleteDir($file_dir);
-
-    $return = array(
-        'success' => "Removed.");
-    echo(json_encode($return));
-} elseif ($_REQUEST['function'] == "loadJob") {
-    setJsonResponse();
-    if (!isset($_REQUEST['user']))
-        die('{"error":"user-field required"}');
-    if (trim($_REQUEST['user']) == "")
-        die('{"error":"user-field required"}');
-    if (!isset($_REQUEST['file']))
-        die('{"error":"file-field required"}');
-    if (trim($_REQUEST['file']) == "")
-        die('{"error":"file-field required"}');
-    if (!isset($_REQUEST['job']))
-        die('{"error":"job-field required"}');
-    if (trim($_REQUEST['job']) == "")
-        die('{"error":"job-field required"}');
-    $file = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR . ($_REQUEST['job']);
-    if (!is_dir($file) && is_file($file)) {
-        $json = file_get_contents($file);
-        echo($json);
-        die('');
-    } else {
-        die('{"error":"Job not found."}');
-    }
-} elseif ($_REQUEST['function'] == 'runJob') {
-    setJsonResponse();
-    $success = array('success' => true);
-
-    if (!isset($_REQUEST['user']))
-        die('{"error":"user-field required"}');
-    if (trim($_REQUEST['user']) == "")
-        die('{"error":"user-field required"}');
-    if (!isset($_REQUEST['file']))
-        die('{"error":"file-field required"}');
-    if (trim($_REQUEST['file']) == "")
-        die('{"error":"file-field required"}');
-    if (!isset($_REQUEST['job']))
-        die('{"error":"job-field required"}');
-    if (trim($_REQUEST['job']) == "")
-        die('{"error":"job-field required"}');
-
+    //create config file
     $file_dir = realpath($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-    $file = $file_dir . ($_REQUEST['job']);
+    $file = $file_dir . ($newFilename);
 
-    $input_file_name = $file_dir . 'input.in';
+    $input_file_name = $file_dir . 'input.ttl';
 
-    $config_file_name = str_replace('.job', '.ttl', $_REQUEST['job']);
+    $config_file_name = str_replace('.job', '.ttl', $newFilename);
     $config_file_name = $file_dir . $config_file_name;
     $config_file_handler = @fopen($config_file_name, 'wb');
 
-    $ouput_file_name = str_replace('.job', '.out', $_REQUEST['job']);
+    $ouput_file_name = str_replace('.job', '.out', $newFilename);
     $ouput_file_name = $file_dir . $ouput_file_name;
-
-    $pid_file_name = str_replace('.job', '.pid', $_REQUEST['job']);
-    $pid_file_name = $file_dir . $pid_file_name;
-
-    $log_file_name = str_replace('.job', '.log', $_REQUEST['job']);
-    $log_file_name = $file_dir . $log_file_name;
 
     $json = file_get_contents($file);
     $query = json_decode($json, true);
-
-    $user_file_dir = realpath($base_dir . md5($_REQUEST['user'])) . DS . ($_REQUEST['file']) . '.json';
-
-    $Filejson = file_get_contents($user_file_dir);
-    $Filequery = json_decode($Filejson);
-    $query['state'] = 'running';
-    file_put_contents($file, json_encode($query));
+    
     if (!$query) {
         die('{"error": "Job config can not be parsed."}');
     }
@@ -211,32 +122,24 @@ if ($_REQUEST['function'] == "getDatasets") {
     if (FALSE === $config_file_handler) {
         die('{"error": "Job config can not be written."}');
     }
+
+    $user_file_dir = realpath($base_dir . md5($_REQUEST['user'])) . DS . ($_REQUEST['file']) . '.json';
+
+    $Filejson = file_get_contents($user_file_dir);
+    $Filequery = json_decode($Filejson);
+
     if (!$Filequery->url) {
         if (is_dir($file) || !is_file($file)) {
-            die('{"error":"Job not foundd."}');
+            die('{"error":"Job not found."}');
         }
         if (is_dir($input_file_name) || !is_file($input_file_name)) {
             die('{"error":"Job not found."}');
         }
+
         $input_file_name = $input_file_name;
 
     } else {
         $input_file_name = $Filequery->filename;
-    }
-    if (is_dir($ouput_file_name)) {
-        die('{"error":"Output file can not be written."}');
-    }
-    if (is_file($ouput_file_name) && !is_writable($ouput_file_name)) {
-        die('{"error":"Output file can not be written."}');
-    }
-    if (is_dir($pid_file_name)) {
-        die('{"error":"PID file can not be written."}');
-    }
-    if (is_dir($pid_file_name)) {
-        die('{"error":"PID file can not be written."}');
-    }
-    if (is_file($pid_file_name) && !is_writable($pid_file_name)) {
-        die('{"error":"PID file can not be written."}');
     }
 
     $config_elements = $query['job'];
@@ -500,6 +403,154 @@ if ($_REQUEST['function'] == "getDatasets") {
         }
     }
     fclose($config_file_handler);
+
+    echo(json_encode($return));
+} elseif ($_REQUEST['function'] == "removeJob") {
+    setJsonResponse();
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    if (!isset($_REQUEST['job']))
+        die('{"error":"job-field required"}');
+    if (trim($_REQUEST['job']) == "")
+        die('{"error":"job-field required"}');
+    $file_dir = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR;
+    $newFilename = $_REQUEST['job'];
+    unlink($file_dir . $newFilename);
+
+    $return = array(
+        'success' => "Removed.");
+    echo(json_encode($return));
+} elseif ($_REQUEST['function'] == "removeFile") {
+    setJsonResponse();
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    $file_dir = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR;
+    unlink($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . '.json');
+    deleteDir($file_dir);
+
+    $return = array(
+        'success' => "Removed.");
+    echo(json_encode($return));
+} elseif ($_REQUEST['function'] == "loadJob") {
+    setJsonResponse();
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    if (!isset($_REQUEST['job']))
+        die('{"error":"job-field required"}');
+    if (trim($_REQUEST['job']) == "")
+        die('{"error":"job-field required"}');
+    $file = $base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR . ($_REQUEST['job']);
+    if (!is_dir($file) && is_file($file)) {
+        $json = file_get_contents($file);
+        echo($json);
+        die('');
+    } else {
+        die('{"error":"Job not found."}');
+    }
+} elseif ($_REQUEST['function'] == 'runJob') {
+    setJsonResponse();
+    $success = array('success' => true);
+
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    if (!isset($_REQUEST['job']))
+        die('{"error":"job-field required"}');
+    if (trim($_REQUEST['job']) == "")
+        die('{"error":"job-field required"}');
+
+    $file_dir = realpath($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    $file = $file_dir . ($_REQUEST['job']);
+
+    $input_file_name = $file_dir . 'input.ttl';
+
+    $config_file_name = str_replace('.job', '.ttl', $_REQUEST['job']);
+    $config_file_name = $file_dir . $config_file_name;
+
+    $ouput_file_name = str_replace('.job', '.out', $_REQUEST['job']);
+    $ouput_file_name = $file_dir . $ouput_file_name;
+
+    $pid_file_name = str_replace('.job', '.pid', $_REQUEST['job']);
+    $pid_file_name = $file_dir . $pid_file_name;
+
+    $log_file_name = str_replace('.job', '.log', $_REQUEST['job']);
+    $log_file_name = $file_dir . $log_file_name;
+
+    $json = file_get_contents($file);
+    $query = json_decode($json, true);
+    if (!$query) {
+        die('{"error": "Job config can not be parsed."}');
+    }
+    if (!isset($query['job'])) {
+        die('{"error": "Job config can not be parsed."}');
+    }
+    if (!$query['job']) {
+        die('{"error": "Job config can not be parsed."}');
+    }
+
+    $user_file_dir = realpath($base_dir . md5($_REQUEST['user'])) . DS . ($_REQUEST['file']) . '.json';
+
+    $Filejson = file_get_contents($user_file_dir);
+    $Filequery = json_decode($Filejson);
+    $query['state'] = 'running';
+    file_put_contents($file, json_encode($query));
+
+    if (!$Filequery->url) {
+        if (is_dir($file) || !is_file($file)) {
+            die('{"error":"Job not foundd."}');
+        }
+        if (is_dir($input_file_name) || !is_file($input_file_name)) {
+            die('{"error":"Job not found."}');
+        }
+
+        $input_file_name = $input_file_name;
+
+    } else {
+        $input_file_name = $Filequery->filename;
+    }
+
+    if (is_dir($ouput_file_name)) {
+        die('{"error":"Output file can not be written."}');
+    }
+    if (is_file($ouput_file_name) && !is_writable($ouput_file_name)) {
+        die('{"error":"Output file can not be written."}');
+    }
+    if (is_dir($pid_file_name)) {
+        die('{"error":"PID file can not be written."}');
+    }
+    if (is_file($pid_file_name) && !is_writable($pid_file_name)) {
+        die('{"error":"PID file can not be written."}');
+    }
+     if (is_dir($config_file_name)) {
+        die('{"error":"Config file is not readable."}');
+    }
+    if (is_file($config_file_name) && !is_readable($config_file_name)) {
+        die('{"error":"Config file is not readable."}');
+    }
+
     //create output and log files if they don't exists already
     touch($ouput_file_name);
 
@@ -574,6 +625,33 @@ if ($_REQUEST['function'] == "getDatasets") {
     $file_dir = realpath($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     $file = $file_dir . ($ouput_file_name);
     header("Content-disposition: attachment; filename=" . $ouput_file_name);
+    readfile($file);
+} elseif ($_REQUEST['function'] == 'getConfig') {
+    setJsonResponse();
+    $success = array('success' => true);
+
+    if (!isset($_REQUEST['user']))
+        die('{"error":"user-field required"}');
+    if (trim($_REQUEST['user']) == "")
+        die('{"error":"user-field required"}');
+    if (!isset($_REQUEST['file']))
+        die('{"error":"file-field required"}');
+    if (trim($_REQUEST['file']) == "")
+        die('{"error":"file-field required"}');
+    if (!isset($_REQUEST['job']))
+        die('{"error":"job-field required"}');
+    if (trim($_REQUEST['job']) == "")
+        die('{"error":"job-field required"}');
+
+    $config_file_name = str_replace('.job', '.ttl', $_REQUEST['job']);
+    $file_dir = realpath($base_dir . md5(($_REQUEST['user'])) . DIRECTORY_SEPARATOR . ($_REQUEST['file']) . DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    $file = $file_dir . ($config_file_name);
+
+    if (!file_exists($file)) {
+        die('{"error":"Config file could not be found"}');
+    }
+
+    header("Content-disposition: attachment; filename=" . $config_file_name);
     readfile($file);
 }
 ?>

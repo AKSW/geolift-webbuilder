@@ -38,7 +38,7 @@ function loadUserFiles() {
         for (index = 0; index < data.length; ++index) {
             var panel = '<div class="panel panel-default" id="file_' + data[index].input + '"><div class="panel-heading">File: ' + data[index].filename + '\n\
                         <div class="pull-right">\n\
-                        <a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" type="button" class="btn btn-success btn-xs ">add Query</a>\n\
+                        <a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" type="button" class="btn btn-success btn-xs ">Add Config</a>\n\
                         <a href="upload/?function=removeFile&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" class="removeFile btn btn-danger btn-xs ">Remove File</a>\n\
                         </div>\n\
                         </div> <div class="panel-body"></div>\n\
@@ -51,36 +51,38 @@ function loadUserFiles() {
                         .html('')
                         .append('<div class="alert alert-warning">\n\
                             <strong>No Querys for this file!</strong>\n\
-                            <a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" class="btn btn-success btn-xs ">add Query</a>\n\
+                            <a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '" class="btn btn-success btn-xs ">Add Config</a>\n\
                             </div>');
 
             } else {
                 var state = "test";
                 for (i = 0; i < data[index].jobs.length; ++i) {
                     if (data[index].jobs[i].state === "waiting") {
-                        state = '<i class="fa fa-clock-o fa-fw" data-toggle="tooltip" data-placement="right" title="Query is pending"></i>';
+                        state = '<i class="fa fa-clock-o fa-fw" data-toggle="tooltip" data-placement="right" title="Geolift process is pending"></i>';
                     } else if (data[index].jobs[i].state === "running") {
-                        state = '<i class="fa fa-spinner fa-spin fa-fw" data-toggle="tooltip" data-placement="right" title="Query is currently computing"></i>';
+                        state = '<i class="fa fa-spinner fa-spin fa-fw" data-toggle="tooltip" data-placement="right" title="Geolift process is currently computing"></i>';
                     } else if (data[index].jobs[i].state === "done") {
-                        state = '<i class="fa fa-check fa-fw" data-toggle="tooltip" data-placement="right" title="Query is done"></i>';
+                        state = '<i class="fa fa-check fa-fw" data-toggle="tooltip" data-placement="right" title="Geolift process is done"></i>';
                     }
                     var buttons = '';
                     if (data[index].jobs[i].state === "waiting") {
-                        buttons += '<a href="upload/?function=removeJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="removeJob btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this Query"><i class="fa fa-fw fa-trash-o"></i></a>';
-                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this Query"><i class="fa fa-fw fa-pencil"></i></a>';
-                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this Query"><i class="fa fa-fw fa-play"></i></a>';
+                        buttons += '<a href="upload/?function=removeJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="removeJob btn btn-danger btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="remove this config"><i class="fa fa-fw fa-trash-o"></i></a>';
+                        buttons += '<a href="upload/?function=getConfig&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="download generated config file"><i class="fa fa-fw fa-cogs"></i></a>';
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="edit this config"><i class="fa fa-fw fa-pencil"></i></a>';
+                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="run this config"><i class="fa fa-fw fa-play"></i></a>';
                     }
                     if (data[index].jobs[i].state === "done" || data[index].jobs[i].state === "running") {
-                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="view this Query"><i class="fa fa-fw fa-eye"></i></a>';
-                        buttons += '<a target="_blank" href="upload/?function=getOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getOutput btn btn-success btn-xs pull-right"><i class="fa fa-fw fa-download "  data-toggle="tooltip" data-placement="left" title="download Output of this Query"></i></a>';
-                        buttons += '<a target="_blank" href="upload/?function=getLogOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getLogOutput btn btn-success btn-xs pull-right" ><i class="fa fa-fw fa-bars" data-toggle="tooltip" data-placement="left" title="download current Logfile of this Query"></i></a>';
-                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="rerun this Query"><i class="fa fa-fw fa-refresh"></i></a>';
+                        buttons += '<a href="Query/?user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="view this config"><i class="fa fa-fw fa-eye"></i></a>';
+                        buttons += '<a href="upload/?function=getConfig&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class=" btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="download generated config file"><i class="fa fa-fw fa-cogs"></i></a>';
+                        buttons += '<a target="_blank" href="upload/?function=getOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getOutput btn btn-success btn-xs pull-right"><i class="fa fa-fw fa-download "  data-toggle="tooltip" data-placement="left" title="download output of this config"></i></a>';
+                        buttons += '<a target="_blank" href="upload/?function=getLogOutput&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="getLogOutput btn btn-success btn-xs pull-right" ><i class="fa fa-fw fa-bars" data-toggle="tooltip" data-placement="left" title="download current log file of this config"></i></a>';
+                        buttons += '<a href="upload/?function=runJob&user=' + encodeURIComponent($user) + '&file=' + data[index].input + '&job=' + data[index].jobs[i].file + '" class="runJob btn btn-success btn-xs pull-right " data-toggle="tooltip" data-placement="left" title="rerun this config"><i class="fa fa-fw fa-refresh"></i></a>';
 
                     }
                     $('#datasets .wrapper')
                             .find('#file_' + data[index].input + ' .panel-body')
                             .append('<div class="row job-row">\n\
-                                <div class="col-xs-10">' + state + '<strong>Job #' + i + ': </strong>' + data[index].jobs[i].name + '</div><div class="col-xs-2">' + '\
+                                <div class="col-xs-9">' + state + '<strong>Job #' + i + ': </strong>' + data[index].jobs[i].name + '</div><div class="col-xs-3">' + '\
                                 ' + buttons + '</div>\n\
                                 </div>');
 
@@ -188,7 +190,4 @@ $(document).ready(function() {
         $('.loggedin').fadeOut();
         $('#blocks').addClass('hidden');
     });
-
-
-
 });

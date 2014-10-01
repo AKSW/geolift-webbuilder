@@ -40,7 +40,7 @@ function handleUpload($file, $i = -1) {
     if (!is_dir($user_dir . $newFilename) && !is_file($user_dir . $newFilename)) {
         mkdir($user_dir . $newFilename);
 
-        move_uploaded_file($tmpName, $user_dir . $newFilename . DIRECTORY_SEPARATOR . "input.in");
+        move_uploaded_file($tmpName, $user_dir . $newFilename . DIRECTORY_SEPARATOR . "input.ttl");
     }
     $ret["input"] = $newFilename;
     $ret["filename"] = $fileName;
